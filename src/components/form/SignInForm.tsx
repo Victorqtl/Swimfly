@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import GoogleSignInButton from '../GoogleSignInButton';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
 	email: z.string().min(1, 'Email is required').email('Invalid email'),
@@ -15,6 +17,7 @@ const formSchema = z.object({
 });
 
 export function SignInForm() {
+	const router = useRouter();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -23,8 +26,19 @@ export function SignInForm() {
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
+	async function onSubmit(values: z.infer<typeof formSchema>) {
+		const signInData = await signIn('credentials', {
+			email: values.email,
+			password: values.password,
+			redirect: false,
+		});
+		console.log('SignIn response:', signInData);
+
+		if (signInData?.error) {
+			console.log('Error:', signInData.error);
+		} else {
+			router.push('/');
+		}
 	}
 
 	return (
