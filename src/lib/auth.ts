@@ -12,6 +12,26 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 	pages: {
 		signIn: '/sign-in',
 	},
+	callbacks: {
+		async jwt({ token, user }) {
+			if (user) {
+				return {
+					...token,
+					username: user.username,
+				};
+			}
+			return token;
+		},
+		async session({ session, token }) {
+			return {
+				...session,
+				user: {
+					...session.user,
+					username: token.username as string,
+				},
+			};
+		},
+	},
 	providers: [
 		Credentials({
 			credentials: {
@@ -28,7 +48,7 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 					return null;
 				}
 
-				const passwordMatch = await compare(credentials.password as string, existingUser.password as string);
+				const passwordMatch = await compare(credentials.password as string, existingUser.password);
 
 				if (!passwordMatch) {
 					return null;

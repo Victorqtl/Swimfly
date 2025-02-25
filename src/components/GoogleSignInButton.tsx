@@ -12,6 +12,7 @@ export default function GoogleSignInButton({ children }: GoogleSignInButtonProps
 	return (
 		<Button
 			onClick={loginWithGoogle}
+			variant={'outline'}
 			className='w-full'>
 			<Image
 				src={GoogleIcon}

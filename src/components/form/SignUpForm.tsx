@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import GoogleSignInButton from '../GoogleSignInButton';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const formSchema = z
 	.object({
@@ -48,6 +49,13 @@ export function SignUpForm() {
 		});
 
 		if (response.ok) {
+			toast('Congratulations', {
+				description: 'Your account has been created',
+				action: {
+					label: 'Undo',
+					onClick: () => console.log('Undo'),
+				},
+			});
 			router.push('/sign-in');
 		} else {
 			console.error('Registration failed');
