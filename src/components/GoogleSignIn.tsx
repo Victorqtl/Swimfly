@@ -1,17 +1,16 @@
+import { signIn } from 'next-auth/react';
 import { ReactNode } from 'react';
 import { Button } from './ui/button';
 import Image from 'next/image';
 import GoogleIcon from '../assets/icons/google-icon.svg';
 
-interface GoogleSignInButtonProps {
+interface GoogleSignInProps {
 	children: ReactNode;
 }
-export default function GoogleSignInButton({ children }: GoogleSignInButtonProps) {
-	const loginWithGoogle = () => console.log('login with google');
-
+export default function GoogleSignIn({ children }: GoogleSignInProps) {
 	return (
 		<Button
-			onClick={loginWithGoogle}
+			onClick={() => signIn('google', { redirectTo: '/user' })}
 			variant={'outline'}
 			className='w-full'>
 			<Image

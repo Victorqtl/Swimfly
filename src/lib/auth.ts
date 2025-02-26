@@ -1,5 +1,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+import Google from 'next-auth/providers/google';
+import GitHub from 'next-auth/providers/github';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { compare } from 'bcrypt';
 import { prisma } from './prisma';
@@ -13,30 +15,24 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 		signIn: '/sign-in',
 	},
 	callbacks: {
-		async jwt({ token, user }) {
+		jwt({ token, user }) {
 			if (user) {
-				return {
-					...token,
-					username: user.username,
-				};
+				token.name = user.name;
 			}
 			return token;
 		},
-		async session({ session, token }) {
-			return {
-				...session,
-				user: {
-					...session.user,
-					username: token.username as string,
-				},
-			};
+		session({ session, token }) {
+			session.user.name = token.name;
+			return session;
 		},
 	},
 	providers: [
+		Google,
+		GitHub,
 		Credentials({
 			credentials: {
-				email: { label: 'Email', type: 'email', placeholder: 'mail@example.com' },
-				password: { label: 'Password', type: 'password' },
+				email: {},
+				password: {},
 			},
 			authorize: async credentials => {
 				if (!credentials?.email || !credentials?.password) {
@@ -55,10 +51,12 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 				}
 				return {
 					id: `${existingUser.id}`,
-					username: existingUser.username,
+					name: existingUser.name,
 					email: existingUser.email,
 				};
 			},
 		}),
 	],
 });
+
+// { clientId: process.env.AUTH_GOOGLE_ID, clientSecret: process.env.AUTH_GOOGLE_SECRET }

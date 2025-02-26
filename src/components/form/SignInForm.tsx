@@ -4,14 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import GoogleSignInButton from '../GoogleSignInButton';
+import { Button } from '../ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { Input } from '../ui/input';
+import GoogleSignIn from '../GoogleSignIn';
+import GithubSignIn from '../GithubSignIn';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-// import { useRouter } from 'next/navigation';
-// import { toast } from 'sonner';
 
 const formSchema = z.object({
 	email: z.string().min(1, 'Email is required').email('Invalid email'),
@@ -21,7 +20,6 @@ const formSchema = z.object({
 export function SignInForm() {
 	const searchParams = useSearchParams();
 	const error = searchParams.get('error');
-	// const router = useRouter();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -34,26 +32,9 @@ export function SignInForm() {
 		const signInData = await signIn('credentials', {
 			email: values.email,
 			password: values.password,
-			// redirect: true,
-			callbackUrl: '/user',
+			redirectTo: '/user',
 		});
 		console.log('SignIn response:', signInData);
-
-		// if (signInData?.error) {
-		// 	console.log('Error:', signInData.error);
-		// 	toast('Oops', {
-		// 		description: 'Incorrect email or password',
-		// 		action: {
-		// 			label: 'Undo',
-		// 			onClick: () => console.log('Undo'),
-		// 		},
-		// 	});
-		// } else {
-		// 	router.refresh();
-		// 	setTimeout(() => {
-		// 		router.push('/user');
-		// 	}, 100);
-		// }
 	}
 
 	return (
@@ -105,7 +86,8 @@ export function SignInForm() {
 			<div className='mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400'>
 				or
 			</div>
-			<GoogleSignInButton>Google</GoogleSignInButton>
+			<GoogleSignIn>Google</GoogleSignIn>
+			<GithubSignIn />
 			<p className='text-center text-sm text-neutral-600 mt-4'>
 				If you don&apos;t have an account, please&nbsp;
 				<Link

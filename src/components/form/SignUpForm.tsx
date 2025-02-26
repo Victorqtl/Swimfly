@@ -4,16 +4,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import GoogleSignInButton from '../GoogleSignInButton';
+import { Button } from '../ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { Input } from '../ui/input';
+import GoogleSignInButton from '../GoogleSignIn';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 const formSchema = z
 	.object({
-		username: z.string().min(1, 'Username is required').max(100),
+		name: z.string().min(1, 'Name is required').max(100),
 		email: z.string().min(1, 'Email is required').email('Invalid email'),
 		password: z.string().min(1, 'Password is required').min(8, 'Password must have than 8 caracters'),
 		confirmPassword: z.string().min(1, 'Password confirmation is required'),
@@ -28,7 +28,7 @@ export function SignUpForm() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			username: '',
+			name: '',
 			email: '',
 			password: '',
 			confirmPassword: '',
@@ -42,7 +42,7 @@ export function SignUpForm() {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				username: values.username,
+				name: values.name,
 				email: values.email,
 				password: values.password,
 			}),
@@ -69,10 +69,10 @@ export function SignUpForm() {
 				className='flex flex-col gap-4'>
 				<FormField
 					control={form.control}
-					name='username'
+					name='name'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Username</FormLabel>
+							<FormLabel>Name</FormLabel>
 							<FormControl>
 								<Input
 									placeholder='John Doe'
