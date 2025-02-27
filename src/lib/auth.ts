@@ -49,11 +49,7 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 				if (!passwordMatch) {
 					return null;
 				}
-				return {
-					id: `${existingUser.id}`,
-					name: existingUser.name,
-					email: existingUser.email,
-				};
+				return existingUser;
 			},
 		}),
 	],

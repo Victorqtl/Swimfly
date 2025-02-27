@@ -32,7 +32,7 @@ export function SignInForm() {
 		const signInData = await signIn('credentials', {
 			email: values.email,
 			password: values.password,
-			redirectTo: '/user',
+			redirectTo: '/dashboard',
 		});
 		console.log('SignIn response:', signInData);
 	}
@@ -86,8 +86,10 @@ export function SignInForm() {
 			<div className='mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400'>
 				or
 			</div>
-			<GoogleSignIn>Google</GoogleSignIn>
-			<GithubSignIn />
+			<div className='flex flex-col gap-2'>
+				<GoogleSignIn>Sign in with Google</GoogleSignIn>
+				<GithubSignIn>Sign in with GitHub</GithubSignIn>
+			</div>
 			<p className='text-center text-sm text-neutral-600 mt-4'>
 				If you don&apos;t have an account, please&nbsp;
 				<Link
