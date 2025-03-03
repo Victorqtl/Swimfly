@@ -16,8 +16,14 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 		error: '/sign-in',
 	},
 	providers: [
-		Google,
-		GitHub,
+		Google({
+			clientId: process.env.AUTH_GOOGLE_ID!,
+			clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+		}),
+		GitHub({
+			clientId: process.env.AUTH_GITHUB_ID!,
+			clientSecret: process.env.AUTH_GITHUB_SECRET!,
+		}),
 		Credentials({
 			credentials: {
 				email: {},
@@ -27,16 +33,13 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 				if (!credentials?.email || !credentials?.password) {
 					return null;
 				}
-
 				const existingUser = await prisma.user.findUnique({
 					where: { email: credentials.email as string },
 				});
 				if (!existingUser) {
 					return null;
 				}
-
 				const passwordMatch = await compare(credentials.password as string, existingUser.password as string);
-
 				if (!passwordMatch) {
 					return null;
 				}
