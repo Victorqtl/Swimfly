@@ -13,18 +13,7 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 	},
 	pages: {
 		signIn: '/sign-in',
-	},
-	callbacks: {
-		jwt({ token, user }) {
-			if (user) {
-				token.name = user.name;
-			}
-			return token;
-		},
-		session({ session, token }) {
-			session.user.name = token.name;
-			return session;
-		},
+		error: '/sign-in',
 	},
 	providers: [
 		Google,
@@ -39,12 +28,14 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 					return null;
 				}
 
-				const existingUser = await prisma.user.findUnique({ where: { email: credentials.email as string } });
+				const existingUser = await prisma.user.findUnique({
+					where: { email: credentials.email as string },
+				});
 				if (!existingUser) {
 					return null;
 				}
 
-				const passwordMatch = await compare(credentials.password as string, existingUser.password);
+				const passwordMatch = await compare(credentials.password as string, existingUser.password as string);
 
 				if (!passwordMatch) {
 					return null;
@@ -53,6 +44,18 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 			},
 		}),
 	],
+	callbacks: {
+		// jwt({ token, user }) {
+		// 	if (user) {
+		// 		token.name = user.name!;
+		// 	}
+		// 	return token;
+		// },
+		// session({ session, token }) {
+		// 	session.user.name = token.name;
+		// 	return session;
+		// },
+	},
 });
 
 // { clientId: process.env.AUTH_GOOGLE_ID, clientSecret: process.env.AUTH_GOOGLE_SECRET }

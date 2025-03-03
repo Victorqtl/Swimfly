@@ -1,18 +1,31 @@
 import Link from 'next/link';
 import { auth } from '../lib/auth';
 import { signOut } from '../lib/auth';
+import { Gauge } from 'lucide-react';
 
 export default async function Navbar() {
 	const session = await auth();
 
 	return (
-		<div className='hover:shadow-md transition-shadow ease-in-out duration-400 border-b-2'>
-			<div className='flex justify-between items-center p-4 lg:px-0 lg:w-[1320px] lg:mx-auto'>
+		<div className='w-[90%] mx-auto mt-3 z-50 rounded-xl bg-white border-[1px] border-gray-100 shadow-input shadow-md hover:shadow-lg transition-shadow ease-in-out duration-400'>
+			<div className='flex justify-between items-center p-4 '>
 				<Link
-					className='text-4xl text-blue-500 font-bold'
+					className='text-4xl text-blue-400 font-bold'
 					href='/'>
 					Swimfly
 				</Link>
+
+				<div className='flex items-center gap-6'>
+					<Link
+						href='/dashboard'
+						className='flex items-center gap-1'>
+						<Gauge width={20} />
+						Dashboard
+					</Link>
+					<Link href=''>Features</Link>
+					<Link href=''>Pricing</Link>
+					<Link href=''>Help</Link>
+				</div>
 
 				{session?.user ? (
 					<form
@@ -30,7 +43,7 @@ export default async function Navbar() {
 					<Link
 						href='/sign-in'
 						className='px-3 py-1 text-md border rounded-lg hover:bg-accent'>
-						Sign in
+						Log in
 					</Link>
 				)}
 			</div>

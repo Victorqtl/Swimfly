@@ -59,7 +59,15 @@ export function SignUpForm() {
 			});
 			router.push('/sign-in');
 		} else {
-			console.error('Registration failed');
+			const errorData = await response.json();
+			if (response.status === 409) {
+				form.setError('email', {
+					type: 'manual',
+					message: errorData?.message,
+				});
+			} else {
+				console.error('Something when wrong:', errorData?.message);
+			}
 		}
 	}
 

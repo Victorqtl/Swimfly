@@ -20,6 +20,9 @@ const formSchema = z.object({
 export function SignInForm() {
 	const searchParams = useSearchParams();
 	const error = searchParams.get('error');
+	const errorCredentials = error === 'CredentialsSignin';
+	const errorOAuth = error === 'OAuthAccountNotLinked';
+	const errorConfiguration = error === 'Configuration';
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -75,7 +78,20 @@ export function SignInForm() {
 						</FormItem>
 					)}
 				/>
-				{error && <div className='text-xs text-red-500'>Incorrect email or password</div>}
+				{errorCredentials && <div className='text-xs text-red-500'>Incorrect email or password</div>}
+				{errorOAuth && (
+					<div className='text-xs text-red-500'>
+						A connection error has occurred. This email address may be associated with another connection
+						method.
+					</div>
+				)}
+				{errorConfiguration && (
+					<div className='text-xs text-red-500'>
+						{' '}
+						A connection error has occurred. This email address may be associated with another connection
+						method.
+					</div>
+				)}
 
 				<Button
 					type='submit'
