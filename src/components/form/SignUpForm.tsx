@@ -37,37 +37,38 @@ export function SignUpForm() {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const response = await fetch('/api/user', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name: values.name,
-				email: values.email,
-				password: values.password,
-			}),
-		});
-
-		if (response.ok) {
-			toast('Congratulations', {
-				description: 'Your account has been created',
-				action: {
-					label: 'Undo',
-					onClick: () => console.log('Undo'),
+		try {
+			const response = await fetch('/api/user', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
 				},
+				body: JSON.stringify({
+					name: values.name,
+					email: values.email,
+					password: values.password,
+				}),
 			});
-			router.push('/sign-in');
-		} else {
-			const errorData = await response.json();
-			if (response.status === 409) {
-				form.setError('email', {
-					type: 'manual',
-					message: errorData?.message,
-				});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+
+				if (response.status === 409) {
+					form.setError('email', {
+						type: 'manual',
+						message: errorData?.error,
+					});
+				} else {
+					throw new Error('Error during user creation');
+				}
 			} else {
-				console.error('Something when wrong:', errorData?.message);
+				toast('Congratulations', {
+					description: 'Your account has been created',
+				});
+				router.push('/sign-in');
 			}
+		} catch (error) {
+			console.error('Something went wrong:', error);
 		}
 	}
 

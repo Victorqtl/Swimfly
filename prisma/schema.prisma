@@ -2,26 +2,26 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
- 
+
 generator client {
   provider = "prisma-client-js"
 }
- 
+
 model User {
-  id            String          @id @default(cuid())
-  name          String          
-  email         String          @unique
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
   emailVerified DateTime?
   password      String?
   image         String?
   accounts      Account[]
   sessions      Session[]
   boards        Board[]
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model Account {
   userId            String
   type              String
@@ -34,52 +34,52 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
 }
- 
+
 model Board {
-  id      String  @id @default(cuid())
-  title   String
-  userId  String
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lists   List[]
- 
+  id     String @id @default(cuid())
+  title  String
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lists  List[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model List {
-  id      String  @id @default(cuid())
+  id      String @id @default(cuid())
   title   String
   order   Int
   boardId String
-  board   Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   cards   Card[]
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -87,14 +87,14 @@ model List {
 model Card {
   id          String    @id @default(cuid())
   title       String
-  description String 
+  description String
   order       Int
   color       String?
   dueDate     DateTime?
   archived    Boolean   @default(false)
   listId      String
   list        List      @relation(fields: [listId], references: [id], onDelete: Cascade)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

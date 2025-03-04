@@ -1,5 +1,5 @@
-import { SignUpForm } from '../../../components/form/SignUpForm';
-import { auth } from '../../../lib/auth';
+import { SignUpForm } from '@/components/form/SignUpForm';
+import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
 export default async function page() {

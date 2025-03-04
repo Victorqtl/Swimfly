@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { hash } from 'bcrypt';
 import * as z from 'zod';
 
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 			where: { email: email },
 		});
 		if (existingUserByEmail) {
-			return NextResponse.json({ user: null, message: 'Email already exists' }, { status: 409 });
+			return NextResponse.json({ error: 'Email already exists' }, { status: 409 });
 		}
 
 		const hashedPassword = await hash(password, 10);
@@ -33,6 +33,7 @@ export async function POST(req: Request) {
 
 		return NextResponse.json({ user: rest, message: 'User created sucessfully' }, { status: 201 });
 	} catch (error) {
-		return NextResponse.json({ message: 'Something went wrong' }, { status: 500 });
+		console.error('Failed to create user', error);
+		return NextResponse.json({ message: 'Failed to create user' }, { status: 500 });
 	}
 }

@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import Image from 'next/image';
+import BoardsList from '@/components/dashboard/BoardsList';
 
 export default async function page() {
 	const session = await auth();
@@ -10,15 +10,7 @@ export default async function page() {
 
 	return (
 		<div>
-			<h1>Hello {session.user.name}</h1>
-			<p>{session.user.email}</p>
-			<Image
-				src={session.user.image}
-				alt='Profil picture'
-				className='rounded-full'
-				width={30}
-				height={30}
-			/>
+			<BoardsList />
 		</div>
 	);
 }
