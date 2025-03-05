@@ -100,3 +100,20 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+.spinner {
+	animation: spinner 1s ease-in-out infinite;
+}
+/* 
+<div className='fixed top-0 right-0 bottom-0 left-0 flex justify-center items-center bg-white '>
+<div className='w-28 h-28 fixed spinner rounded-full border-solid border-8 border-blue-400 border-t-transparent' />
+</div> */
+
+@keyframes spinner {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}

@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useKanbanStore } from '@/store/useKanbanStore';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -14,7 +15,8 @@ const formSchema = z.object({
 	}),
 });
 
-export function CreateNewBoard({ setOpenModal }: { setOpenModal: React.Dispatch<React.SetStateAction<boolean>> }) {
+export function CreateNewBoard() {
+	const { createBoard, isLoading } = useKanbanStore();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -23,22 +25,7 @@ export function CreateNewBoard({ setOpenModal }: { setOpenModal: React.Dispatch<
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		try {
-			const response = await fetch('/api/boards', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					title: values.title,
-				}),
-			});
-
-			if (!response.ok) {
-				throw new Error('Error during board creation');
-			}
-			setOpenModal(false);
-		} catch (error) {
-			console.error('Something went wrong:', error);
-		}
+		await createBoard(values.title);
 	}
 
 	return (
@@ -62,7 +49,11 @@ export function CreateNewBoard({ setOpenModal }: { setOpenModal: React.Dispatch<
 						</FormItem>
 					)}
 				/>
-				<Button type='submit'>Submit</Button>
+				<Button
+					type='submit'
+					disabled={isLoading}>
+					Submit
+				</Button>
 			</form>
 		</Form>
 	);
