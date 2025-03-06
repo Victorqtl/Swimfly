@@ -16,7 +16,7 @@ const formSchema = z.object({
 });
 
 export function CreateNewBoard() {
-	const { createBoard, isLoading } = useKanbanStore();
+	const { createBoard, isLoading, setOpenModal } = useKanbanStore();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -32,13 +32,14 @@ export function CreateNewBoard() {
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className='space-y-8 bg-white'>
+				className='flex flex-col gap-4 w-72 p-4 relative bg-white rounded-lg'>
+				<h2 className='text-center'>Create a new board</h2>
 				<FormField
 					control={form.control}
 					name='title'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Title</FormLabel>
+							<FormLabel>Board title</FormLabel>
 							<FormControl>
 								<Input
 									placeholder='First board'
@@ -51,9 +52,16 @@ export function CreateNewBoard() {
 				/>
 				<Button
 					type='submit'
+					variant='blue'
 					disabled={isLoading}>
 					Submit
 				</Button>
+				<button
+					type='button'
+					onClick={() => setOpenModal(false)}
+					className='absolute top-2 right-4 cursor-pointer text-xl'>
+					x
+				</button>
 			</form>
 		</Form>
 	);

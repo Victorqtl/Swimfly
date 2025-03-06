@@ -18,11 +18,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={`flex flex-col ${lexend.className} antialiased font-medium`}>
-				<main className='flex flex-col'>
+			<body className={`flex flex-col ${lexend.className} antialiased  text-sm font-medium`}>
+				<header className='z-50'>
 					<Navbar />
-					{children}
-				</main>
+				</header>
+				<main className='flex flex-col'>{children}</main>
 				<Toaster />
 			</body>
 		</html>

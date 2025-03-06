@@ -1,0 +1,53 @@
+'use client';
+
+import { useKanbanStore } from '@/store/useKanbanStore';
+import Image from 'next/image';
+import Link from 'next/link';
+
+interface Session {
+	user: {
+		id: string;
+		name: string;
+		image: string;
+	};
+}
+
+export default function Sidebar({ session }: { session: Session }) {
+	const { setOpenModal, boards } = useKanbanStore();
+	return (
+		<nav className='min-h-[calc(100vh-86px)] w-60 bg-white rounded-br-lg border-[1px] border-t-0 border-gray-100 shadow-input shadow-lg hover:shadow-2xl transition-shadow ease-in-out duration-400'>
+			<div className='flex flex-col gap-2 p-4'>
+				<div className='flex items-center gap-2 py-2 px-4 -mx-4 border-b-[1px] border-gray-100'>
+					<Image
+						src={session.user.image}
+						alt='Profile picture'
+						width={32}
+						height={32}
+						className='rounded-md'
+					/>
+					<h2>{session.user.name}&apos;s Dashboard</h2>
+				</div>
+				<div>
+					<div className='flex justify-between items-center'>
+						<h3 className='font-bold'>Your boards</h3>
+						<button
+							onClick={() => setOpenModal(true)}
+							className='text-xl font-bold cursor-pointer'>
+							+
+						</button>
+					</div>
+					<div className='flex flex-col'>
+						{boards.map(board => (
+							<Link
+								href={`http://localhost:3000/boards/${board.id}`}
+								className='hover:bg-gray-100 py-2 px-4 -mx-4'
+								key={board.id}>
+								{board.title}
+							</Link>
+						))}
+					</div>
+				</div>
+			</div>
+		</nav>
+	);
+}
