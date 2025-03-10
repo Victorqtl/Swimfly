@@ -1,22 +1,19 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import * as z from 'zod';
 import { auth } from '@/lib/auth';
-
-const boardSchema = z.object({
-	title: z.string().min(1, 'Title required'),
-});
 
 export async function POST(req: Request) {
 	try {
 		const session = await auth();
+		const { title } = await req.json();
 
-		if (!session || !session.user.id) {
+		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const body = await req.json();
-		const { title } = boardSchema.parse(body);
+		if (!title) {
+			return new NextResponse('Title required', { status: 400 });
+		}
 
 		const newBoard = await prisma.board.create({
 			data: {
@@ -25,7 +22,7 @@ export async function POST(req: Request) {
 			},
 		});
 
-		return NextResponse.json({ board: newBoard }, { status: 201 });
+		return NextResponse.json(newBoard);
 	} catch (error) {
 		console.error('Failed to create board', error);
 		return NextResponse.json({ error: 'Failed to create board' }, { status: 500 });
@@ -36,7 +33,7 @@ export async function GET() {
 	try {
 		const session = await auth();
 
-		if (!session || !session.user) {
+		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
@@ -49,8 +46,13 @@ export async function GET() {
 			},
 		});
 
-		return NextResponse.json({ boards }, { status: 200 });
+		if (!boards) {
+			return new NextResponse('Boards not found', { status: 404 });
+		}
+
+		return NextResponse.json(boards);
 	} catch (error) {
 		console.error('Failed to fetch data', error);
+		return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
 	}
 }

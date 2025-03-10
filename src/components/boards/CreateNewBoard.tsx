@@ -33,7 +33,7 @@ export function CreateNewBoard() {
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
 				className='flex flex-col gap-4 w-72 p-4 relative bg-white rounded-lg'>
-				<h2 className='text-center'>Create a new board</h2>
+				<h2 className='text-base text-center'>Create a new board</h2>
 				<FormField
 					control={form.control}
 					name='title'

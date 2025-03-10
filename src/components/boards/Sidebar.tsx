@@ -14,6 +14,7 @@ interface Session {
 
 export default function Sidebar({ session }: { session: Session }) {
 	const { setOpenModal, boards } = useKanbanStore();
+	console.log('Boards:', boards);
 	return (
 		<nav className='min-h-[calc(100vh-86px)] w-60 bg-white rounded-br-lg border-[1px] border-t-0 border-gray-100 shadow-input shadow-lg hover:shadow-2xl transition-shadow ease-in-out duration-400'>
 			<div className='flex flex-col gap-2 p-4'>
@@ -39,7 +40,7 @@ export default function Sidebar({ session }: { session: Session }) {
 					<div className='flex flex-col'>
 						{boards.map(board => (
 							<Link
-								href={`http://localhost:3000/boards/${board.id}`}
+								href={`/boards/${board.id}`}
 								className='hover:bg-gray-100 py-2 px-4 -mx-4'
 								key={board.id}>
 								{board.title}
