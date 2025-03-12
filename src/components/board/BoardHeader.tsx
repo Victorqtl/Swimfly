@@ -1,8 +1,10 @@
 import { useKanbanStore } from '@/store/useKanbanStore';
+import { redirect } from 'next/navigation';
 import { useRef, useState } from 'react';
+import { Button } from '../ui/button';
 
-export default function BoardHeader({ boardId }: { boardId: string }) {
-	const { currentBoard, updateBoardTitle, deleteBoard } = useKanbanStore();
+export default function BoardHeader() {
+	const { currentBoard, updateBoardTitle, deleteBoard, boardId } = useKanbanStore();
 	const [handleInput, setHandleInput] = useState(false);
 	const [localTitle, setLocalTitle] = useState(`${currentBoard!.title}`);
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -17,7 +19,7 @@ export default function BoardHeader({ boardId }: { boardId: string }) {
 
 	const saveChanges = () => {
 		if (localTitle.trim() !== '' && localTitle !== currentBoard!.title) {
-			updateBoardTitle(boardId, localTitle);
+			updateBoardTitle(boardId!, localTitle);
 		}
 		setHandleInput(false);
 	};
@@ -31,18 +33,18 @@ export default function BoardHeader({ boardId }: { boardId: string }) {
 	};
 
 	return (
-		<div className='flex items-center justify-between p-2 mb-6 bg-blue-500/30'>
+		<div className='flex items-center justify-between h-16 pl-2 pr-24 bg-gray-900/20'>
 			<div>
 				{!handleInput ? (
 					<h1
-						className='px-2 py-1 text-2xl font-bold cursor-pointer hover:bg-white/50 transition-colors'
+						className='px-2 py-1 text-2xl font-bold cursor-pointer hover:bg-white/50 rounded-lg transition-colors'
 						onClick={enableEditMode}>
 						{currentBoard!.title}
 					</h1>
 				) : (
 					<input
 						ref={inputRef}
-						className='px-2 py-1 text-2xl font-bold outline-none bg-gray-400'
+						className='px-2 py-1 text-2xl font-bold outline-none bg-gray-600 rounded-lg'
 						size={localTitle.length}
 						type='text'
 						value={localTitle}
@@ -52,16 +54,15 @@ export default function BoardHeader({ boardId }: { boardId: string }) {
 					/>
 				)}
 			</div>
-			<button
+			<Button
 				onClick={() => {
-					if (confirm('Êtes-vous sûr de vouloir supprimer ce board?')) {
-						deleteBoard(boardId);
-						window.location.href = '/';
-					}
+					deleteBoard(boardId!);
+					redirect('/boards');
 				}}
-				className='px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600'>
+				variant='destructive'
+				className='cursor-pointer'>
 				Supprimer
-			</button>
+			</Button>
 		</div>
 	);
 }

@@ -32,12 +32,11 @@ export function SignInForm() {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const signInData = await signIn('credentials', {
+		await signIn('credentials', {
 			email: values.email,
 			password: values.password,
-			redirectTo: '/dashboard',
+			redirectTo: '/boards',
 		});
-		console.log('SignIn response:', signInData);
 	}
 
 	return (

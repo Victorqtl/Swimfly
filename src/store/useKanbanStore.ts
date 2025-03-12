@@ -33,24 +33,37 @@ export interface Board {
 
 interface KanbanState {
 	boards: Board[];
-	openModal: boolean;
+	lists: List[];
+	openBoardModal: boolean;
+	openListModal: boolean;
 	isLoading: boolean;
 	currentBoard: Board | null;
-	setOpenModal: (open: boolean) => void;
+	boardId: string | null;
+	setBoardId: (id: string | null) => void;
+	setOpenBoardModal: (open: boolean) => void;
+	setOpenListModal: (open: boolean) => void;
 	fetchBoards: () => Promise<void>;
-	createBoard: (title: string) => Promise<void>;
+	createBoard: (title: string) => Promise<Board>;
 	getBoard: (boardId: string) => Promise<void>;
 	updateBoardTitle: (boardId: string, title: string) => Promise<void>;
 	deleteBoard: (boardId: string) => Promise<void>;
+	fetchLists: (boardID: string) => Promise<void>;
+	createList: (boardId: string, title: string) => Promise<List>;
 }
 
 export const useKanbanStore = create<KanbanState>((set, get) => ({
 	boards: [],
-	openModal: false,
+	lists: [],
+	openBoardModal: false,
+	openListModal: false,
 	isLoading: false,
 	currentBoard: null,
+	boardId: null,
 
-	setOpenModal: open => set({ openModal: open }),
+	setOpenBoardModal: open => set({ openBoardModal: open }),
+	setOpenListModal: open => set({ openListModal: open }),
+
+	setBoardId: id => set({ boardId: id }),
 
 	fetchBoards: async () => {
 		set({ isLoading: true });
@@ -87,6 +100,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 				isLoading: false,
 			}));
 			await get().fetchBoards();
+			return board;
 		} catch (error) {
 			console.error('Something went wrong', error);
 			set({ isLoading: false });
@@ -151,6 +165,48 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 				currentBoard: state.currentBoard?.id === boardId ? null : state.currentBoard,
 				isLoading: false,
 			}));
+		} catch (error) {
+			console.error('Something went wrong', error);
+			set({ isLoading: false });
+		}
+	},
+	fetchLists: async boardId => {
+		set({ isLoading: true });
+		try {
+			const response = await fetch(`/api/boards/${boardId}/lists`);
+
+			if (!response.ok) {
+				throw new Error('Error when fetching lists');
+			}
+			const lists = await response.json();
+			set({ lists: lists, isLoading: false });
+		} catch (error) {
+			console.error('Something went wrong', error);
+			set({ isLoading: false });
+		}
+	},
+	createList: async (boardId, title) => {
+		set({ isLoading: true });
+		try {
+			const response = await fetch(`/api/boards/${boardId}/lists`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ title }),
+			});
+
+			if (!response.ok) {
+				throw new Error('Error during list creation');
+			}
+
+			const list = await response.json();
+
+			set(state => ({
+				lists: [...state.lists, list],
+				openModal: false,
+				isLoading: false,
+			}));
+
+			return list;
 		} catch (error) {
 			console.error('Something went wrong', error);
 			set({ isLoading: false });

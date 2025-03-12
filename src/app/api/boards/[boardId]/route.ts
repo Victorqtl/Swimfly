@@ -7,12 +7,14 @@ export async function GET(req: Request, { params }: { params: { boardId: string 
 		const session = await auth();
 
 		if (!session) {
-			return new NextResponse('Not authorized', { status: 401 });
+			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
+
+		const { boardId } = params;
 
 		const board = await prisma.board.findUnique({
 			where: {
-				id: params.boardId,
+				id: boardId,
 				userId: session.user.id,
 			},
 			include: {
@@ -32,7 +34,7 @@ export async function GET(req: Request, { params }: { params: { boardId: string 
 		});
 
 		if (!board) {
-			return new NextResponse('Board not found', { status: 404 });
+			return NextResponse.json({ error: 'Board not found' }, { status: 404 });
 		}
 
 		return NextResponse.json(board);
@@ -48,11 +50,11 @@ export async function PATCH(req: Request, { params }: { params: { boardId: strin
 		const { title } = await req.json();
 
 		if (!session) {
-			return new NextResponse('Not authorized', { status: 401 });
+			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
 		if (!title) {
-			return new NextResponse('Le titre est requis', { status: 400 });
+			return NextResponse.json({ error: 'Title required' }, { status: 400 });
 		}
 
 		const board = await prisma.board.update({
@@ -68,7 +70,7 @@ export async function PATCH(req: Request, { params }: { params: { boardId: strin
 		return NextResponse.json(board);
 	} catch (error) {
 		console.error('Failed to update board', error);
-		return new NextResponse('Failed to update board', { status: 500 });
+		return NextResponse.json({ error: 'Failed to update board' }, { status: 500 });
 	}
 }
 
@@ -77,7 +79,7 @@ export async function DELETE(req: Request, { params }: { params: { boardId: stri
 		const session = await auth();
 
 		if (!session) {
-			return new NextResponse('Not authorized', { status: 401 });
+			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
 		const board = await prisma.board.delete({
@@ -90,6 +92,6 @@ export async function DELETE(req: Request, { params }: { params: { boardId: stri
 		return NextResponse.json(board);
 	} catch (error) {
 		console.error('Failed to delete board', error);
-		return new NextResponse('Failed to delete board', { status: 500 });
+		return NextResponse.json({ error: 'Failed to delete board' }, { status: 500 });
 	}
 }

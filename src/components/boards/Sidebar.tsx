@@ -3,6 +3,7 @@
 import { useKanbanStore } from '@/store/useKanbanStore';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 interface Session {
 	user: {
@@ -13,8 +14,11 @@ interface Session {
 }
 
 export default function Sidebar({ session }: { session: Session }) {
-	const { setOpenModal, boards } = useKanbanStore();
-	console.log('Boards:', boards);
+	const { setOpenBoardModal, boards, fetchBoards } = useKanbanStore();
+
+	useEffect(() => {
+		fetchBoards();
+	}, [fetchBoards]);
 	return (
 		<nav className='min-h-[calc(100vh-86px)] w-60 bg-white rounded-br-lg border-[1px] border-t-0 border-gray-100 shadow-input shadow-lg hover:shadow-2xl transition-shadow ease-in-out duration-400'>
 			<div className='flex flex-col gap-2 p-4'>
@@ -32,7 +36,7 @@ export default function Sidebar({ session }: { session: Session }) {
 					<div className='flex justify-between items-center'>
 						<h3 className='font-bold'>Your boards</h3>
 						<button
-							onClick={() => setOpenModal(true)}
+							onClick={() => setOpenBoardModal(true)}
 							className='text-xl font-bold cursor-pointer'>
 							+
 						</button>

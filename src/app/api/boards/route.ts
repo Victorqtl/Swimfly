@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 		}
 
 		if (!title) {
-			return new NextResponse('Title required', { status: 400 });
+			return NextResponse.json({ error: 'Title required' }, { status: 400 });
 		}
 
 		const newBoard = await prisma.board.create({
@@ -47,12 +47,12 @@ export async function GET() {
 		});
 
 		if (!boards) {
-			return new NextResponse('Boards not found', { status: 404 });
+			return NextResponse.json({ error: 'Boards not found' }, { status: 404 });
 		}
 
 		return NextResponse.json(boards);
 	} catch (error) {
-		console.error('Failed to fetch data', error);
-		return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
+		console.error('Failed to fetch boards', error);
+		return NextResponse.json({ error: 'Failed to fetch boards' }, { status: 500 });
 	}
 }

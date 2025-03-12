@@ -7,7 +7,7 @@ import { useKanbanStore } from '@/store/useKanbanStore';
 import Link from 'next/link';
 
 export default function BoardsList() {
-	const { boards, fetchBoards, openModal, setOpenModal } = useKanbanStore();
+	const { boards, fetchBoards, openBoardModal, setOpenBoardModal } = useKanbanStore();
 	console.log('Boards:', boards);
 
 	useEffect(() => {
@@ -18,7 +18,7 @@ export default function BoardsList() {
 		<section className='flex-1 p-4'>
 			<ul className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-4 gap-y-4'>
 				<Button
-					onClick={() => setOpenModal(true)}
+					onClick={() => setOpenBoardModal(true)}
 					size='xl'
 					className='bg-zinc-500 hover:bg-zinc-600'>
 					Create a new board
@@ -38,11 +38,11 @@ export default function BoardsList() {
 					: null}
 			</ul>
 
-			{openModal && (
+			{openBoardModal && (
 				<div
 					onClick={e => {
 						if (e.target === e.currentTarget) {
-							setOpenModal(false);
+							setOpenBoardModal(false);
 						}
 					}}
 					className='fixed top-0 right-0 left-0 bottom-0 z-50 bg-black/30 flex justify-center items-center'>
