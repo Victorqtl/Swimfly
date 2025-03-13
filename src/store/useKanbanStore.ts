@@ -35,33 +35,30 @@ interface KanbanState {
 	boards: Board[];
 	lists: List[];
 	openBoardModal: boolean;
-	openListModal: boolean;
 	isLoading: boolean;
 	currentBoard: Board | null;
 	boardId: string | null;
 	setBoardId: (id: string | null) => void;
 	setOpenBoardModal: (open: boolean) => void;
-	setOpenListModal: (open: boolean) => void;
 	fetchBoards: () => Promise<void>;
 	createBoard: (title: string) => Promise<Board>;
 	getBoard: (boardId: string) => Promise<void>;
 	updateBoardTitle: (boardId: string, title: string) => Promise<void>;
 	deleteBoard: (boardId: string) => Promise<void>;
-	fetchLists: (boardID: string) => Promise<void>;
+	fetchLists: (boardId: string) => Promise<void>;
 	createList: (boardId: string, title: string) => Promise<List>;
+	updateList: (listID: string, boardId: string, title: string) => Promise<void>;
 }
 
 export const useKanbanStore = create<KanbanState>((set, get) => ({
 	boards: [],
 	lists: [],
 	openBoardModal: false,
-	openListModal: false,
 	isLoading: false,
 	currentBoard: null,
 	boardId: null,
 
 	setOpenBoardModal: open => set({ openBoardModal: open }),
-	setOpenListModal: open => set({ openListModal: open }),
 
 	setBoardId: id => set({ boardId: id }),
 
@@ -74,6 +71,22 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			}
 			const boards = await response.json();
 			set({ boards: boards, isLoading: false });
+		} catch (error) {
+			console.error('Something went wrong', error);
+			set({ isLoading: false });
+		}
+	},
+
+	getBoard: async boardId => {
+		set({ isLoading: true });
+		try {
+			const response = await fetch(`/api/boards/${boardId}`);
+			if (!response.ok) {
+				throw new Error('Error when fetching board');
+			}
+			const board = await response.json();
+			set({ currentBoard: board, isLoading: false });
+			get().fetchLists(boardId);
 		} catch (error) {
 			console.error('Something went wrong', error);
 			set({ isLoading: false });
@@ -100,22 +113,6 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 				isLoading: false,
 			}));
 			await get().fetchBoards();
-			return board;
-		} catch (error) {
-			console.error('Something went wrong', error);
-			set({ isLoading: false });
-		}
-	},
-
-	getBoard: async boardId => {
-		set({ isLoading: true });
-		try {
-			const response = await fetch(`/api/boards/${boardId}`);
-			if (!response.ok) {
-				throw new Error('Error when fetching board');
-			}
-			const board = await response.json();
-			set({ currentBoard: board, isLoading: false });
 			return board;
 		} catch (error) {
 			console.error('Something went wrong', error);
@@ -170,21 +167,23 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			set({ isLoading: false });
 		}
 	},
-	fetchLists: async boardId => {
+
+	fetchLists: async (boardId: string) => {
 		set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}/lists`);
-
 			if (!response.ok) {
 				throw new Error('Error when fetching lists');
 			}
 			const lists = await response.json();
 			set({ lists: lists, isLoading: false });
+			return lists;
 		} catch (error) {
-			console.error('Something went wrong', error);
+			console.error('Failed to fetch lists', error);
 			set({ isLoading: false });
 		}
 	},
+
 	createList: async (boardId, title) => {
 		set({ isLoading: true });
 		try {
@@ -207,6 +206,35 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			}));
 
 			return list;
+		} catch (error) {
+			console.error('Something went wrong', error);
+			set({ isLoading: false });
+		}
+	},
+
+	updateList: async (listId, boardId, title) => {
+		set({ isLoading: true });
+		try {
+			const list = get().lists.find(l => l.id === listId);
+			if (!list) throw new Error('List not found');
+
+			const response = await fetch(`/api/boards/${boardId}/${listId}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ title }),
+			});
+			console.log(response);
+
+			if (!response.ok) {
+				throw new Error('Error during list update');
+			}
+
+			const updatedList = await response.json();
+
+			set(state => ({
+				lists: state.lists.map(l => (l.id === listId ? updatedList : l)),
+				isLoading: false,
+			}));
 		} catch (error) {
 			console.error('Something went wrong', error);
 			set({ isLoading: false });

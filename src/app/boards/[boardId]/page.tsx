@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { useKanbanStore } from '@/store/useKanbanStore';
 import BoardHeader from '@/components/board/BoardHeader';
 import { CreateNewBoard } from '@/components/boards/CreateNewBoard';
-import BoardList from '@/components/board/BoardList';
+import BoardLists from '@/components/board/BoardLists';
 
 export default function BoardPage() {
 	const params = useParams();
@@ -41,11 +41,9 @@ export default function BoardPage() {
 	}
 
 	return (
-		<div className='flex-1'>
-			<div className='flex flex-col'>
-				<BoardHeader />
-				<BoardList />
-			</div>
+		<div className='flex flex-col flex-1'>
+			<BoardHeader />
+			<BoardLists />
 			{openBoardModal && (
 				<div
 					onClick={e => {

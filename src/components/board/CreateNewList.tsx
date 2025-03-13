@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { useKanbanStore } from '@/store/useKanbanStore';
 
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
 const formSchema = z.object({
@@ -15,8 +15,8 @@ const formSchema = z.object({
 	}),
 });
 
-export function CreateNewList() {
-	const { createList, isLoading, setOpenListModal, boardId } = useKanbanStore();
+export function CreateNewList({ setShowAddList }: { setShowAddList: (show: boolean) => void }) {
+	const { createList, isLoading, boardId } = useKanbanStore();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -27,24 +27,24 @@ export function CreateNewList() {
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		if (boardId) {
 			await createList(boardId, values.title);
-			setOpenListModal(false);
 		}
 	}
 	return (
 		<Form {...form}>
 			<form
+				onBlur={() => setShowAddList(false)}
 				onSubmit={form.handleSubmit(onSubmit)}
-				className='flex flex-col gap-4 w-72 p-4 relative bg-white rounded-lg'>
-				<h2 className='text-base text-center'>Create a new list</h2>
+				className='flex flex-col gap-2 w-[272px] p-4 bg-gray-100 rounded-lg shadow-sm'>
 				<FormField
 					control={form.control}
 					name='title'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>List title</FormLabel>
 							<FormControl>
 								<Input
-									placeholder='To do'
+									placeholder='List title'
+									className='bg-white'
+									autoFocus
 									{...field}
 								/>
 							</FormControl>
@@ -52,18 +52,15 @@ export function CreateNewList() {
 						</FormItem>
 					)}
 				/>
-				<Button
-					type='submit'
-					variant='blue'
-					disabled={isLoading}>
-					Submit
-				</Button>
-				<button
-					type='button'
-					onClick={() => setOpenListModal(false)}
-					className='absolute top-2 right-4 cursor-pointer text-xl'>
-					x
-				</button>
+				<div className='flex gap-2'>
+					<Button
+						type='submit'
+						variant='blue'
+						disabled={isLoading}
+						className='flex-1'>
+						Submit
+					</Button>
+				</div>
 			</form>
 		</Form>
 	);

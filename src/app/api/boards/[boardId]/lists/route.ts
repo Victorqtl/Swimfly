@@ -2,11 +2,52 @@ import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 
+export async function GET(req: Request, { params }: { params: { boardId: string } }) {
+	try {
+		const session = await auth();
+		const { boardId } = params;
+
+		if (!session) {
+			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
+		}
+
+		const board = await prisma.board.findUnique({
+			where: {
+				id: boardId,
+				userId: session.user.id,
+			},
+			include: {
+				lists: {
+					orderBy: {
+						order: 'asc',
+					},
+					include: {
+						cards: {
+							orderBy: {
+								order: 'asc',
+							},
+						},
+					},
+				},
+			},
+		});
+
+		if (!board) {
+			return NextResponse.json({ error: 'Board not found' }, { status: 404 });
+		}
+
+		return NextResponse.json(board.lists);
+	} catch (error) {
+		console.error('Failed to fetch lists', error);
+		return NextResponse.json({ error: 'Failed to fetch lists' }, { status: 500 });
+	}
+}
+
 export async function POST(req: Request, { params }: { params: { boardId: string } }) {
 	try {
 		const session = await auth();
 		const { title } = await req.json();
-		const boardId = params.boardId;
+		const { boardId } = params;
 
 		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
@@ -46,55 +87,5 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 	} catch (error) {
 		console.error('Failed to create list', error);
 		return NextResponse.json({ error: 'Failed to create list' }, { status: 500 });
-	}
-}
-
-export async function GET(req: Request, { params }: { params: { boardId: string } }) {
-	try {
-		const session = await auth();
-		if (!params || !params.boardId) {
-			return NextResponse.json({ error: 'Invalid board ID' }, { status: 400 });
-		}
-
-		const boardId = params.boardId;
-
-		if (!session) {
-			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
-		}
-
-		const board = await prisma.board.findUnique({
-			where: {
-				id: boardId,
-				userId: session.user.id,
-			},
-		});
-
-		if (!board) {
-			return NextResponse.json({ error: 'Board not found' }, { status: 404 });
-		}
-
-		const lists = await prisma.list.findMany({
-			where: {
-				boardId,
-				board: {
-					userId: session.user.id,
-				},
-			},
-			orderBy: {
-				order: 'asc',
-			},
-			include: {
-				cards: {
-					orderBy: {
-						order: 'asc',
-					},
-				},
-			},
-		});
-
-		return NextResponse.json(lists);
-	} catch (error) {
-		console.error('Failed to fetch lists', error);
-		return NextResponse.json({ error: 'Failed to fetch lists' }, { status: 500 });
 	}
 }

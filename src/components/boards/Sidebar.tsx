@@ -20,7 +20,7 @@ export default function Sidebar({ session }: { session: Session }) {
 		fetchBoards();
 	}, [fetchBoards]);
 	return (
-		<nav className='min-h-[calc(100vh-86px)] w-60 bg-white rounded-br-lg border-[1px] border-t-0 border-gray-100 shadow-input shadow-lg hover:shadow-2xl transition-shadow ease-in-out duration-400'>
+		<nav className='min-h-[calc(100vh-88px)] min-w-60 bg-white rounded-br-lg border-[1px] border-t-0 border-gray-100 shadow-input shadow-lg hover:shadow-2xl transition-shadow ease-in-out duration-400'>
 			<div className='flex flex-col gap-2 p-4'>
 				<div className='flex items-center gap-2 py-2 px-4 -mx-4 border-b-[1px] border-gray-100'>
 					<Image
