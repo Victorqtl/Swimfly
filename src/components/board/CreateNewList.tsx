@@ -27,8 +27,10 @@ export function CreateNewList({ setShowAddList }: { setShowAddList: (show: boole
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		if (boardId) {
 			await createList(boardId, values.title);
+			setShowAddList(false);
 		}
 	}
+
 	return (
 		<Form {...form}>
 			<form
@@ -52,7 +54,9 @@ export function CreateNewList({ setShowAddList }: { setShowAddList: (show: boole
 						</FormItem>
 					)}
 				/>
-				<div className='flex gap-2'>
+				<div
+					className='flex gap-2'
+					onMouseDown={e => e.preventDefault()}>
 					<Button
 						type='submit'
 						variant='blue'
