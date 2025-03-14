@@ -24,11 +24,11 @@ export default function BoardHeader() {
 	};
 
 	return (
-		<div className='flex items-center justify-between h-16 pl-2 pr-24 bg-gray-700/20'>
+		<div className='flex items-center justify-between h-16 pl-2 pr-24 bg-gray-700/30'>
 			<div>
 				{!handleInput ? (
 					<h1
-						className='px-2 py-1 text-2xl font-bold cursor-pointer hover:bg-gray-200 rounded-lg transition-colors'
+						className='px-2 py-1 text-2xl font-bold cursor-pointer hover:bg-gray-700/40 rounded-lg transition-colors'
 						onClick={() => setHandleInput(true)}>
 						{currentBoard!.title}
 					</h1>

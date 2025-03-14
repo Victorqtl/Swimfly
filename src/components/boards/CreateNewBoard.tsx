@@ -9,6 +9,7 @@ import { useKanbanStore } from '@/store/useKanbanStore';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { X } from 'lucide-react';
 
 const formSchema = z.object({
 	title: z.string().min(1, {
@@ -62,8 +63,11 @@ export function CreateNewBoard() {
 				<button
 					type='button'
 					onClick={() => setOpenBoardModal(false)}
-					className='absolute top-2 right-4 cursor-pointer text-xl'>
-					x
+					className='absolute top-2 right-2 cursor-pointer text-xl'>
+					<X
+						size={20}
+						strokeWidth={2}
+					/>
 				</button>
 			</form>
 		</Form>

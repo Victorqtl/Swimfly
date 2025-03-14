@@ -11,7 +11,7 @@ interface GitHubIconProps {
 export default function GithubSignIn({ children }: GitHubIconProps) {
 	return (
 		<Button
-			onClick={() => signIn('github', { redirectTo: '/dashboard' })}
+			onClick={() => signIn('github', { redirectTo: '/boards' })}
 			variant={'outline'}
 			className='w-full'>
 			<Image

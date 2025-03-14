@@ -10,7 +10,7 @@ interface GoogleSignInProps {
 export default function GoogleSignIn({ children }: GoogleSignInProps) {
 	return (
 		<Button
-			onClick={() => signIn('google', { redirectTo: '/dashboard' })}
+			onClick={() => signIn('google', { redirectTo: '/boards' })}
 			variant={'outline'}
 			className='w-full'>
 			<Image

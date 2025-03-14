@@ -2,6 +2,7 @@
 
 import { useKanbanStore } from '@/store/useKanbanStore';
 import Image from 'next/image';
+import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
@@ -38,7 +39,10 @@ export default function Sidebar({ session }: { session: Session }) {
 						<button
 							onClick={() => setOpenBoardModal(true)}
 							className='text-xl font-bold cursor-pointer'>
-							+
+							<Plus
+								size={16}
+								strokeWidth={3}
+							/>
 						</button>
 					</div>
 					<div className='flex flex-col'>

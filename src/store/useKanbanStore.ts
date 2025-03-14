@@ -47,7 +47,8 @@ interface KanbanState {
 	deleteBoard: (boardId: string) => Promise<void>;
 	fetchLists: (boardId: string) => Promise<void>;
 	createList: (boardId: string, title: string) => Promise<List>;
-	updateList: (listID: string, boardId: string, title: string) => Promise<void>;
+	updateList: (listId: string, boardId: string, title: string) => Promise<void>;
+	deleteList: (listId: string, boardId: string) => Promise<void>;
 }
 
 export const useKanbanStore = create<KanbanState>((set, get) => ({
@@ -218,12 +219,11 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			const list = get().lists.find(l => l.id === listId);
 			if (!list) throw new Error('List not found');
 
-			const response = await fetch(`/api/boards/${boardId}/${listId}`, {
+			const response = await fetch(`/api/boards/${boardId}/lists/${listId}`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ title }),
 			});
-			console.log(response);
 
 			if (!response.ok) {
 				throw new Error('Error during list update');
@@ -233,6 +233,27 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			set(state => ({
 				lists: state.lists.map(l => (l.id === listId ? updatedList : l)),
+				isLoading: false,
+			}));
+		} catch (error) {
+			console.error('Something went wrong', error);
+			set({ isLoading: false });
+		}
+	},
+
+	deleteList: async (listId, boardId) => {
+		set({ isLoading: true });
+		try {
+			const response = await fetch(`/api/boards/${boardId}/lists/${listId}`, {
+				method: 'DELETE',
+			});
+
+			if (!response) {
+				throw new Error('Error during list deletion');
+			}
+
+			set(state => ({
+				lists: state.lists.filter(list => list.id !== listId),
 				isLoading: false,
 			}));
 		} catch (error) {

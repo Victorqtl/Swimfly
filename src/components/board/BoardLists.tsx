@@ -1,15 +1,15 @@
 import { useKanbanStore } from '@/store/useKanbanStore';
 import AddList from './AddList';
 import { useState } from 'react';
-// import { Button } from '../ui/button';
+import { Ellipsis } from 'lucide-react';
 
 export default function BoardList() {
-	const { lists, boardId, updateList } = useKanbanStore();
-	const [editingListId, setEditingListId] = useState<string | null>(null);
+	const { lists, boardId, updateList, deleteList } = useKanbanStore();
+	const [localListId, setLocalListId] = useState<string | null>(null);
 	const [localTitle, setLocalTitle] = useState('');
 
 	const handleEditStart = (list: { id: string; title: string }) => {
-		setEditingListId(list.id);
+		setLocalListId(list.id);
 		setLocalTitle(list.title);
 	};
 
@@ -17,14 +17,14 @@ export default function BoardList() {
 		if (localTitle.trim() !== '' && localTitle !== currentListTitle) {
 			updateList(listId, boardId!, localTitle);
 		}
-		setEditingListId(null);
+		setLocalListId(null);
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, listId: string, currentTitle: string) => {
 		if (e.key === 'Enter') {
 			saveChanges(listId, currentTitle);
 		} else if (e.key === 'Escape') {
-			setEditingListId(null);
+			setLocalListId(null);
 		}
 	};
 
@@ -35,7 +35,7 @@ export default function BoardList() {
 					key={list.id}
 					className='w-[272px] h-fit p-4 bg-gray-100 rounded-md shadow-sm shrink-0'>
 					<div className='flex justify-between items-center'>
-						{editingListId !== list.id ? (
+						{localListId !== list.id ? (
 							<h2
 								onClick={() => handleEditStart(list)}
 								className='text-sm cursor-pointer hover:bg-gray-200 px-2 py-1 rounded-lg w-full'>
@@ -53,6 +53,11 @@ export default function BoardList() {
 								className='px-2 py-1 outline-none bg-gray-800 text-white rounded-lg w-full'
 							/>
 						)}
+						<button
+							onClick={() => deleteList(list.id, boardId!)}
+							className='p-1 rounded-lg cursor-pointer hover:bg-gray-200'>
+							<Ellipsis />
+						</button>
 					</div>
 					{/* <div className='p-2 flex flex-col gap-2'>
 							{list.cards &&
