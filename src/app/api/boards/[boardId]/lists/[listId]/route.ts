@@ -51,7 +51,7 @@ export async function DELETE(req: Request, { params }: { params: { listId: strin
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const { listId, boardId } = params;
+		const { listId, boardId } = await params;
 
 		const board = await prisma.board.findUnique({
 			where: {

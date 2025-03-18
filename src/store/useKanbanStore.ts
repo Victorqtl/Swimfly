@@ -113,7 +113,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 				openModal: false,
 				isLoading: false,
 			}));
-			await get().fetchBoards();
+			// await get().fetchBoards();
 			return board;
 		} catch (error) {
 			console.error('Something went wrong', error);

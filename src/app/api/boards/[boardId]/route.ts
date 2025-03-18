@@ -10,7 +10,7 @@ export async function GET(req: Request, { params }: { params: { boardId: string 
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const { boardId } = params;
+		const { boardId } = await params;
 
 		const board = await prisma.board.findUnique({
 			where: {

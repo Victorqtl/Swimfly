@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth';
 export async function GET(req: Request, { params }: { params: { boardId: string } }) {
 	try {
 		const session = await auth();
-		const { boardId } = params;
+		const { boardId } = await params;
 
 		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
@@ -47,7 +47,7 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 	try {
 		const session = await auth();
 		const { title } = await req.json();
-		const { boardId } = params;
+		const { boardId } = await params;
 
 		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });

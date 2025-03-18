@@ -30,6 +30,7 @@ export function CreateNewBoard() {
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const newBoard = await createBoard(values.title);
 		if (!newBoard) return;
+		setOpenBoardModal(false);
 		router.push(`/boards/${newBoard.id}`);
 	}
 	return (

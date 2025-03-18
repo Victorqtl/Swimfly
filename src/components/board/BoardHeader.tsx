@@ -28,7 +28,7 @@ export default function BoardHeader() {
 			<div>
 				{!handleInput ? (
 					<h1
-						className='px-2 py-1 text-2xl font-bold cursor-pointer hover:bg-gray-700/40 rounded-lg transition-colors'
+						className='px-2 py-1 text-2xl font-bold cursor-pointe hover:bg-gray-700/40 rounded-lg transition-colors'
 						onClick={() => setHandleInput(true)}>
 						{currentBoard!.title}
 					</h1>
@@ -42,7 +42,7 @@ export default function BoardHeader() {
 						onChange={e => setLocalTitle(e.target.value)}
 						onBlur={saveChanges}
 						onKeyDown={handleKeyDown}
-						className='px-2 py-1 text-2xl font-bold outline-none bg-gray-800 text-white rounded-lg'
+						className='px-2 py-1 text-2xl font-bold outline-blue-400 bg-gray-800 text-white rounded-xs'
 					/>
 				)}
 			</div>
@@ -53,7 +53,7 @@ export default function BoardHeader() {
 				}}
 				variant='destructive'
 				className='cursor-pointer'>
-				Supprimer
+				Delete
 			</Button>
 		</div>
 	);
