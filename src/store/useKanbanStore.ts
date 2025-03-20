@@ -299,7 +299,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			const cards = await response.json();
 
 			set(state => ({
-				cards: [...state.cards, ...cards],
+				cards: [...state.cards.filter(card => card.listId !== listId), ...cards],
 				isLoading: false,
 			}));
 

@@ -68,7 +68,7 @@ export default function BoardList() {
 			{lists.map(list => (
 				<div
 					key={list.id}
-					className='relative w-[272px] h-fit p-4 bg-gray-100 rounded-md shadow-sm shrink-0'>
+					className='flex flex-col gap-2 relative w-[272px] h-fit p-4 bg-neutral-300 rounded-lg shadow-sm shrink-0'>
 					<div className='flex justify-between items-center'>
 						{toggleInputTitle && listId === list.id ? (
 							<input
@@ -84,7 +84,7 @@ export default function BoardList() {
 						) : (
 							<h2
 								onClick={() => handleEditStart(list)}
-								className='text-sm cursor-pointer w-full'>
+								className='text-sm cursor-pointer w-full px-2'>
 								{list.title}
 							</h2>
 						)}
@@ -102,6 +102,8 @@ export default function BoardList() {
 						</button>
 					</div>
 
+					<BoardCards listId={list.id} />
+
 					<div>
 						{listId !== list.id || !showAddCard ? (
 							<button
@@ -109,7 +111,7 @@ export default function BoardList() {
 									setListId(list.id);
 									setShowAddCard(true);
 								}}
-								className='flex items-center gap-2 w-full p-2 rounded-lg cursor-pointer hover:bg-gray-200'>
+								className='flex items-center gap-2 w-full p-2 rounded-lg cursor-pointer hover:bg-neutral-100'>
 								<Plus size={16} />
 								Add a card
 							</button>
@@ -117,8 +119,6 @@ export default function BoardList() {
 							showAddCard && listId === list.id && <CreateNewCard setShowAddCard={setShowAddCard} />
 						)}
 					</div>
-
-					<BoardCards listId={list.id} />
 
 					{toggleActionsList && listId === list.id ? (
 						<section
