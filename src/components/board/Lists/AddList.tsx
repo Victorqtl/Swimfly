@@ -1,5 +1,5 @@
-import { CreateNewList } from './CreateNewList';
-import { Button } from '../ui/button';
+import { CreateNewList } from '@/components/board/Lists/CreateNewList';
+import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 

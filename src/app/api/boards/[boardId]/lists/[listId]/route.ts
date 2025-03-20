@@ -36,6 +36,12 @@ export async function PATCH(req: Request, { params }: { params: { listId: string
 				title,
 			},
 		});
+
+		await prisma.board.update({
+			where: { id: boardId },
+			data: { updatedAt: new Date() },
+		});
+
 		return NextResponse.json(list);
 	} catch (error) {
 		console.error('Failed to update list', error);
@@ -91,6 +97,11 @@ export async function DELETE(req: Request, { params }: { params: { listId: strin
 					decrement: 1,
 				},
 			},
+		});
+
+		await prisma.board.update({
+			where: { id: boardId },
+			data: { updatedAt: new Date() },
 		});
 
 		return NextResponse.json({ success: true }, { status: 200 });

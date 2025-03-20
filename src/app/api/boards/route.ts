@@ -1,23 +1,27 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
+import { z } from 'zod';
+
+const boardSchema = z.object({
+	title: z.string().min(1, 'Title required'),
+	color: z.string().optional(),
+});
 
 export async function POST(req: Request) {
 	try {
 		const session = await auth();
-		const { title } = await req.json();
 
 		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		if (!title) {
-			return NextResponse.json({ error: 'Title required' }, { status: 400 });
-		}
+		const body = await req.json();
+		const validedData = boardSchema.parse(body);
 
 		const newBoard = await prisma.board.create({
 			data: {
-				title,
+				...validedData,
 				userId: session.user.id,
 			},
 		});
@@ -42,7 +46,7 @@ export async function GET() {
 				userId: session.user.id,
 			},
 			orderBy: {
-				createdAt: 'desc',
+				updatedAt: 'desc',
 			},
 		});
 

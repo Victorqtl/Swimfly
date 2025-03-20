@@ -4,19 +4,21 @@ import { useState, useRef, useEffect } from 'react';
 import { Ellipsis } from 'lucide-react';
 import { Plus } from 'lucide-react';
 import ListActions from './ListActions';
+// import BoardCards from '../Cards/BoardCards';
+import { CreateNewCard } from '../Cards/CreateNewCard';
 
 export default function BoardList() {
-	const { lists, boardId, updateList } = useKanbanStore();
-	const [titleListId, setTitleListId] = useState<string | null>(null);
+	const { lists, boardId, updateList, setListId, listId } = useKanbanStore();
 	const [localListTitle, setLocalListTitle] = useState<string>('');
-	const [actionsListId, setActionsListId] = useState<string | null>(null);
 	const [toggleActionsList, setToggleActionsList] = useState(false);
+	const [toggleInputTitle, setToggleInputTitle] = useState(false);
+	const [showAddCardForm, setShowAddCardForm] = useState(false);
 	const actionsRef = useRef<HTMLDivElement>(null);
-	console.log(actionsListId);
+	console.log(listId);
 
 	const resetActionsList = () => {
 		setToggleActionsList(false);
-		setActionsListId(null);
+		setListId(null);
 	};
 
 	useEffect(() => {
@@ -33,7 +35,8 @@ export default function BoardList() {
 	}, [toggleActionsList]);
 
 	const handleEditStart = (list: { id: string; title: string }) => {
-		setTitleListId(list.id);
+		setToggleInputTitle(true);
+		setListId(list.id);
 		setLocalListTitle(list.title);
 	};
 
@@ -41,14 +44,16 @@ export default function BoardList() {
 		if (localListTitle.trim() !== '' && localListTitle !== currentListTitle) {
 			updateList(listId, boardId!, localListTitle);
 		}
-		setTitleListId(null);
+		setToggleInputTitle(false);
+		setListId(null);
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, listId: string, currentTitle: string) => {
 		if (e.key === 'Enter') {
 			saveChanges(listId, currentTitle);
 		} else if (e.key === 'Escape') {
-			setTitleListId(null);
+			setToggleInputTitle(false);
+			setListId(null);
 		}
 	};
 
@@ -65,7 +70,7 @@ export default function BoardList() {
 					key={list.id}
 					className='relative w-[272px] h-fit p-4 bg-gray-100 rounded-md shadow-sm shrink-0'>
 					<div className='flex justify-between items-center'>
-						{titleListId === list.id ? (
+						{toggleInputTitle && listId === list.id ? (
 							<input
 								type='text'
 								value={localListTitle}
@@ -85,11 +90,11 @@ export default function BoardList() {
 						)}
 						<button
 							onClick={() => {
-								if (actionsListId !== list.id) {
-									setActionsListId(list.id);
-									setToggleActionsList(true);
-								} else {
+								if (listId === list.id) {
 									resetActionsList();
+								} else {
+									setListId(list.id);
+									setToggleActionsList(true);
 								}
 							}}
 							className='p-1 rounded-lg cursor-pointer hover:bg-gray-200'>
@@ -97,12 +102,26 @@ export default function BoardList() {
 						</button>
 					</div>
 
-					<div className='flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-200'>
-						<Plus size={16} />
-						<p>Add a card</p>
+					<div>
+						{listId !== list.id ? (
+							<button
+								onClick={() => {
+									setListId(list.id);
+									setShowAddCardForm(true);
+								}}
+								className='flex items-center gap-2 w-full p-2 rounded-lg cursor-pointer hover:bg-gray-200'>
+								<Plus size={16} />
+								Add a card
+							</button>
+						) : (
+							showAddCardForm &&
+							listId === list.id && <CreateNewCard setShowAddCardForm={setShowAddCardForm} />
+						)}
 					</div>
 
-					{toggleActionsList && actionsListId === list.id ? (
+					{/* <BoardCards /> */}
+
+					{toggleActionsList && listId === list.id ? (
 						<section
 							ref={actionsRef}
 							className='z-10 absolute -right-[225px] top-14 w-[272px] p-4 flex flex-col gap-2 border rounded-lg shadow-sm bg-white'>

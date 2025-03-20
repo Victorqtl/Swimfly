@@ -1,6 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
+// import { z } from 'zod';
+
+// const listSchema;
 
 export async function GET(req: Request, { params }: { params: { boardId: string } }) {
 	try {
@@ -81,6 +84,11 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 				order: newOrder,
 				boardId,
 			},
+		});
+
+		await prisma.board.update({
+			where: { id: boardId },
+			data: { updatedAt: new Date() },
 		});
 
 		return NextResponse.json(newList);

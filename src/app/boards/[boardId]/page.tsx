@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { useKanbanStore } from '@/store/useKanbanStore';
 import BoardHeader from '@/components/board/BoardHeader';
 import { CreateNewBoard } from '@/components/boards/CreateNewBoard';
-import BoardLists from '@/components/board/BoardLists';
+import BoardLists from '@/components/board/Lists/BoardLists';
 
 export default function BoardPage() {
 	const params = useParams();

@@ -47,27 +47,34 @@ export async function GET(req: Request, { params }: { params: { boardId: string 
 export async function PATCH(req: Request, { params }: { params: { boardId: string } }) {
 	try {
 		const session = await auth();
-		const { title } = await req.json();
 
 		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		if (!title) {
-			return NextResponse.json({ error: 'Title required' }, { status: 400 });
-		}
+		const { title } = await req.json();
+		const boardId = params.boardId;
 
-		const board = await prisma.board.update({
+		const board = await prisma.board.findUnique({
 			where: {
-				id: params.boardId,
+				id: boardId,
 				userId: session.user.id,
-			},
-			data: {
-				title,
 			},
 		});
 
-		return NextResponse.json(board);
+		if (!board) {
+			return NextResponse.json({ error: 'Board not found' }, { status: 404 });
+		}
+
+		const updatedBoard = await prisma.board.update({
+			where: { id: boardId },
+			data: {
+				title: title,
+				updatedAt: new Date(),
+			},
+		});
+
+		return NextResponse.json(updatedBoard);
 	} catch (error) {
 		console.error('Failed to update board', error);
 		return NextResponse.json({ error: 'Failed to update board' }, { status: 500 });
@@ -82,14 +89,24 @@ export async function DELETE(req: Request, { params }: { params: { boardId: stri
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const board = await prisma.board.delete({
+		const boardId = params.boardId;
+
+		const board = await prisma.board.findUnique({
 			where: {
-				id: params.boardId,
+				id: boardId,
 				userId: session.user.id,
 			},
 		});
 
-		return NextResponse.json(board);
+		if (!board) {
+			return NextResponse.json({ error: 'Board not found' }, { status: 404 });
+		}
+
+		await prisma.board.delete({
+			where: { id: boardId },
+		});
+
+		return NextResponse.json({ message: 'Board deleted successfully' });
 	} catch (error) {
 		console.error('Failed to delete board', error);
 		return NextResponse.json({ error: 'Failed to delete board' }, { status: 500 });

@@ -62,10 +62,11 @@ model VerificationToken {
 }
 
 model Board {
-  id     String @id @default(cuid())
+  id     String  @id @default(cuid())
   title  String
+  color  String?
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   lists  List[]
 
   createdAt DateTime @default(now())
@@ -73,11 +74,12 @@ model Board {
 }
 
 model List {
-  id      String @id @default(cuid())
+  id      String  @id @default(cuid())
   title   String
   order   Int
+  color   String?
   boardId String
-  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  board   Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
   cards   Card[]
 
   createdAt DateTime @default(now())
@@ -85,15 +87,14 @@ model List {
 }
 
 model Card {
-  id          String    @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
-  description String
+  description String?
   order       Int
   color       String?
-  dueDate     DateTime?
-  archived    Boolean   @default(false)
+  archived    Boolean @default(false)
   listId      String
-  list        List      @relation(fields: [listId], references: [id], onDelete: Cascade)
+  list        List    @relation(fields: [listId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
