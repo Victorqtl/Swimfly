@@ -28,7 +28,7 @@ export default function BoardHeader() {
 			<div>
 				{!handleInput ? (
 					<h1
-						className='px-2 py-1 text-2xl font-bold cursor-pointe hover:bg-gray-700/40 rounded-lg transition-colors'
+						className='px-2 py-1 text-2xl font-bold cursor-pointer hover:bg-gray-700/40 rounded-lg transition-colors'
 						onClick={() => setHandleInput(true)}>
 						{currentBoard!.title}
 					</h1>

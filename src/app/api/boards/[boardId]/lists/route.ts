@@ -49,16 +49,12 @@ export async function GET(req: Request, { params }: { params: { boardId: string 
 export async function POST(req: Request, { params }: { params: { boardId: string } }) {
 	try {
 		const session = await auth();
-		const { title } = await req.json();
-		const { boardId } = await params;
 
 		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		if (!title) {
-			return NextResponse.json({ error: 'Title required' }, { status: 400 });
-		}
+		const { boardId } = await params;
 
 		const board = await prisma.board.findUnique({
 			where: {
@@ -66,9 +62,13 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 				userId: session.user.id,
 			},
 		});
-
 		if (!board) {
 			return NextResponse.json({ error: 'Board not found' }, { status: 404 });
+		}
+
+		const { title } = await req.json();
+		if (!title) {
+			return NextResponse.json({ error: 'Title required' }, { status: 400 });
 		}
 
 		const lastList = await prisma.list.findFirst({
@@ -76,7 +76,7 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 			orderBy: { order: 'desc' },
 		});
 
-		const newOrder = lastList ? lastList.order + 1 : 0;
+		const newOrder = lastList ? lastList.order + 1 : 1;
 
 		const newList = await prisma.list.create({
 			data: {

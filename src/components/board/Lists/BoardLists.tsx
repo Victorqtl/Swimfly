@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Ellipsis } from 'lucide-react';
 import { Plus } from 'lucide-react';
 import ListActions from './ListActions';
-// import BoardCards from '../Cards/BoardCards';
+import BoardCards from '../Cards/BoardCards';
 import { CreateNewCard } from '../Cards/CreateNewCard';
 
 export default function BoardList() {
@@ -12,7 +12,7 @@ export default function BoardList() {
 	const [localListTitle, setLocalListTitle] = useState<string>('');
 	const [toggleActionsList, setToggleActionsList] = useState(false);
 	const [toggleInputTitle, setToggleInputTitle] = useState(false);
-	const [showAddCardForm, setShowAddCardForm] = useState(false);
+	const [showAddCard, setShowAddCard] = useState(false);
 	const actionsRef = useRef<HTMLDivElement>(null);
 	console.log(listId);
 
@@ -103,23 +103,22 @@ export default function BoardList() {
 					</div>
 
 					<div>
-						{listId !== list.id ? (
+						{listId !== list.id || !showAddCard ? (
 							<button
 								onClick={() => {
 									setListId(list.id);
-									setShowAddCardForm(true);
+									setShowAddCard(true);
 								}}
 								className='flex items-center gap-2 w-full p-2 rounded-lg cursor-pointer hover:bg-gray-200'>
 								<Plus size={16} />
 								Add a card
 							</button>
 						) : (
-							showAddCardForm &&
-							listId === list.id && <CreateNewCard setShowAddCardForm={setShowAddCardForm} />
+							showAddCard && listId === list.id && <CreateNewCard setShowAddCard={setShowAddCard} />
 						)}
 					</div>
 
-					{/* <BoardCards /> */}
+					<BoardCards listId={list.id} />
 
 					{toggleActionsList && listId === list.id ? (
 						<section

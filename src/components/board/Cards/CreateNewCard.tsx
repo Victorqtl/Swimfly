@@ -15,8 +15,8 @@ const formSchema = z.object({
 	}),
 });
 
-export function CreateNewCard({ setShowAddCardForm }: { setShowAddCardForm: (show: boolean) => void }) {
-	const { createCard, isLoading, boardId, listId } = useKanbanStore();
+export function CreateNewCard({ setShowAddCard }: { setShowAddCard: (show: boolean) => void }) {
+	const { createCard, isLoading, boardId, listId, setListId } = useKanbanStore();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -26,17 +26,20 @@ export function CreateNewCard({ setShowAddCardForm }: { setShowAddCardForm: (sho
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		if (boardId) {
-			await createCard(boardId, listId!, values.title);
-			setShowAddCardForm(false);
+			await createCard(boardId, listId!, values);
+			setShowAddCard(false);
 		}
 	}
 
 	return (
 		<Form {...form}>
 			<form
-				onBlur={() => setShowAddCardForm(false)}
+				onBlur={() => {
+					setShowAddCard(false);
+					setListId(null);
+				}}
 				onSubmit={form.handleSubmit(onSubmit)}
-				className='flex flex-col gap-2 w-full p-4 bg-gray-100 rounded-lg shadow-sm'>
+				className='flex flex-col gap-2 w-full'>
 				<FormField
 					control={form.control}
 					name='title'
