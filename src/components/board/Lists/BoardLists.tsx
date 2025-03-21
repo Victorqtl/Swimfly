@@ -59,7 +59,7 @@ export default function BoardList() {
 
 	return (
 		<div
-			className='h-full flex gap-4 p-4 overflow-x-auto'
+			className='flex gap-4 p-4'
 			onKeyDown={e => {
 				if (e.key === 'Escape') {
 					resetActionsList();

@@ -41,9 +41,11 @@ export default function BoardPage() {
 	}
 
 	return (
-		<div className='flex flex-col flex-1'>
+		<div className='flex flex-col'>
 			<BoardHeader />
-			<BoardLists />
+			<div className='overflow-x-auto'>
+				<BoardLists />
+			</div>
 			{openBoardModal && (
 				<div
 					onClick={e => {

@@ -14,9 +14,11 @@ export default async function DashboardLayout({
 	}
 
 	return (
-		<div className='flex'>
-			<Sidebar session={session} />
-			{children}
+		<div className='flex flex-1 overflow-hidden'>
+			<div className='hidden md:block'>
+				<Sidebar session={session} />
+			</div>
+			<div className='flex-1 overflow-x-auto'>{children}</div>
 		</div>
 	);
 }

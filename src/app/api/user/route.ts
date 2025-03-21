@@ -22,14 +22,15 @@ export async function POST(req: Request) {
 		}
 
 		const hashedPassword = await hash(password, 10);
-		const newUser = await prisma.user.create({
+		await prisma.user.create({
 			data: {
 				name,
 				email,
 				password: hashedPassword,
 			},
 		});
-		const { password: newUserPassword, ...rest } = newUser;
+		// const { password: newUserPassword, ...rest } = newUser;
+		const rest = { email, name };
 
 		return NextResponse.json({ user: rest, message: 'User created sucessfully' }, { status: 201 });
 	} catch (error) {
