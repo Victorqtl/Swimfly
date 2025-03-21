@@ -8,7 +8,7 @@ import { auth } from '@/lib/auth';
 export async function GET(req: Request, { params }: { params: { boardId: string } }) {
 	try {
 		const session = await auth();
-		const { boardId } = await params;
+		const { boardId } = params;
 
 		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
@@ -54,7 +54,7 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const { boardId } = await params;
+		const { boardId } = params;
 
 		const board = await prisma.board.findUnique({
 			where: {

@@ -1,6 +1,6 @@
 import { useKanbanStore } from '@/store/useKanbanStore';
 import AddList from './AddList';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Ellipsis } from 'lucide-react';
 import { Plus } from 'lucide-react';
 import ListActions from './ListActions';
@@ -16,10 +16,10 @@ export default function BoardList() {
 	const actionsRef = useRef<HTMLDivElement>(null);
 	console.log(listId);
 
-	const resetActionsList = () => {
+	const resetActionsList = useCallback(() => {
 		setToggleActionsList(false);
 		setListId(null);
-	};
+	}, [setListId]);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -32,7 +32,7 @@ export default function BoardList() {
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [toggleActionsList]);
+	}, [toggleActionsList, resetActionsList]);
 
 	const handleEditStart = (list: { id: string; title: string }) => {
 		setToggleInputTitle(true);

@@ -47,24 +47,24 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
 			},
 		}),
 	],
-	// callbacks: {
-	// 	jwt: async ({ token, user }) => {
-	// 		if (user) {
-	// 			token.id = user.id!;
-	// 			token.name = user.name!;
-	// 			token.email = user.email!;
-	// 			token.image = user.image;
-	// 		}
-	// 		return token;
-	// 	},
-	// 	session: async ({ session, token }) => {
-	// 		if (token) {
-	// 			session.user.id = token.id;
-	// 			session.user.name = token.name;
-	// 			session.user.email = token.email;
-	// 			session.user.image = token.image;
-	// 		}
-	// 		return session;
-	// 	},
-	// },
+	callbacks: {
+		jwt: async ({ token, user }) => {
+			if (user) {
+				token.id = user.id!;
+				token.name = user.name!;
+				token.email = user.email!;
+				token.image = user.image as string;
+			}
+			return token;
+		},
+		session: async ({ session, token }) => {
+			if (token) {
+				session.user.id = token.id;
+				session.user.name = token.name;
+				session.user.email = token.email;
+				session.user.image = token.image;
+			}
+			return session;
+		},
+	},
 });

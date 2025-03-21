@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-export const cardSchema = z.object({
+const cardSchema = z.object({
 	title: z.string().min(1, 'Title required'),
 	order: z.number(),
 	description: z.string().optional(),
@@ -19,7 +19,7 @@ export async function GET(req: Request, { params }: { params: { boardId: string;
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const { boardId, listId } = await params;
+		const { boardId, listId } = params;
 
 		const board = await prisma.board.findUnique({
 			where: {
@@ -65,7 +65,7 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const { boardId, listId } = await params;
+		const { boardId, listId } = params;
 
 		const board = await prisma.board.findUnique({
 			where: {
