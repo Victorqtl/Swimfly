@@ -86,11 +86,6 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 			},
 		});
 
-		await prisma.board.update({
-			where: { id: boardId },
-			data: { updatedAt: new Date() },
-		});
-
 		return NextResponse.json(newList);
 	} catch (error) {
 		console.error('Failed to create list', error);

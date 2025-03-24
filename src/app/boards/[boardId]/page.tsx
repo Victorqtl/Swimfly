@@ -43,7 +43,7 @@ export default function BoardPage() {
 	return (
 		<div className='flex flex-col'>
 			<BoardHeader />
-			<div className='overflow-x-auto'>
+			<div className='overflow-x-auto min-h-[calc(100vh-152px)]'>
 				<BoardLists />
 			</div>
 			{openBoardModal && (

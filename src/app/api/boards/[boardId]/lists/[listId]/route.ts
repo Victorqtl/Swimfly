@@ -5,15 +5,11 @@ import { prisma } from '@/lib/prisma';
 export async function PATCH(req: Request, { params }: { params: { listId: string; boardId: string } }) {
 	try {
 		const session = await auth();
-		const { title } = await req.json();
 
 		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		if (!title) {
-			return NextResponse.json({ error: 'Title required' }, { status: 400 });
-		}
 		const { listId, boardId } = params;
 
 		const board = await prisma.board.findUnique({
@@ -27,6 +23,12 @@ export async function PATCH(req: Request, { params }: { params: { listId: string
 			return NextResponse.json({ error: 'Board not found' }, { status: 404 });
 		}
 
+		const { title } = await req.json();
+
+		if (!title) {
+			return NextResponse.json({ error: 'Title required' }, { status: 400 });
+		}
+
 		const list = await prisma.list.update({
 			where: {
 				id: listId,
@@ -35,11 +37,6 @@ export async function PATCH(req: Request, { params }: { params: { listId: string
 			data: {
 				title,
 			},
-		});
-
-		await prisma.board.update({
-			where: { id: boardId },
-			data: { updatedAt: new Date() },
 		});
 
 		return NextResponse.json(list);
@@ -97,11 +94,6 @@ export async function DELETE(req: Request, { params }: { params: { listId: strin
 					decrement: 1,
 				},
 			},
-		});
-
-		await prisma.board.update({
-			where: { id: boardId },
-			data: { updatedAt: new Date() },
 		});
 
 		return NextResponse.json({ success: true }, { status: 200 });

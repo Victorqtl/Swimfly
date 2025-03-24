@@ -57,6 +57,13 @@ interface KanbanState {
 
 	fetchCards: (boardId: string, listId: string) => Promise<Card[]>;
 	createCard: (boardId: string, listId: string, data: { title: string }) => Promise<Card>;
+	updateCard: (
+		boardId: string,
+		listId: string,
+		cardId: string,
+		data: { title: string; description?: string; color?: string; archived?: boolean; order?: number }
+	) => Promise<void>;
+	deleteCard: (boardId: string, listId: string, cardId: string) => Promise<void>;
 }
 
 export const useKanbanStore = create<KanbanState>((set, get) => ({
@@ -107,7 +114,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	createBoard: async title => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const response = await fetch('/api/boards', {
 				method: 'POST',
@@ -125,7 +132,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 				openModal: false,
 				isLoading: false,
 			}));
-			get().fetchBoards();
+			// get().fetchBoards();
 			return board;
 		} catch (error) {
 			console.error('Something went wrong', error);
@@ -134,7 +141,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	updateBoardTitle: async (boardId, title) => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}`, {
 				method: 'PATCH',
@@ -161,7 +168,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	deleteBoard: async boardId => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}`, {
 				method: 'DELETE',
@@ -202,7 +209,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	createList: async (boardId, title) => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}/lists`, {
 				method: 'POST',
@@ -216,7 +223,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			const list = await response.json();
 
-			get().fetchBoards();
+			// get().fetchBoards();
 
 			set(state => ({
 				lists: [...state.lists, list],
@@ -232,7 +239,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	updateList: async (listId, boardId, title) => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const list = get().lists.find(l => l.id === listId);
 			if (!list) throw new Error('List not found');
@@ -249,7 +256,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			const updatedList = await response.json();
 
-			get().fetchBoards();
+			// get().fetchBoards();
 
 			set(state => ({
 				lists: state.lists.map(l => (l.id === listId ? updatedList : l)),
@@ -262,7 +269,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	deleteList: async (listId, boardId) => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}/lists/${listId}`, {
 				method: 'DELETE',
@@ -271,8 +278,6 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			if (!response) {
 				throw new Error('Error during list deletion');
 			}
-
-			get().fetchBoards();
 
 			set(state => ({
 				lists: state.lists.filter(list => list.id !== listId),
@@ -312,7 +317,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	createCard: async (boardId, listId, data) => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const list = get().lists.find(list => list.id === listId);
 			if (!list) throw new Error('List not found');
@@ -332,8 +337,6 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			const newCard = await response.json();
 
-			get().fetchBoards();
-
 			set(state => ({
 				cards: [...state.cards, newCard],
 				isLoading: false,
@@ -343,6 +346,67 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 		} catch (error) {
 			console.error('Something went wrong', error);
 			set({ isLoading: false });
+		}
+	},
+
+	updateCard: async (boardId, listId, cardId, data) => {
+		// set({ isLoading: true });
+		try {
+			const card = get().cards.find(card => card.id === cardId);
+			if (!card) {
+				throw new Error('Card not found');
+			}
+
+			const list = get().lists.find(list => list.id === card.listId);
+			if (!list) {
+				throw new Error('List not found');
+			}
+			const response = await fetch(`/api/boards/${boardId}/lists/${listId}/cards/${cardId}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ ...data }),
+			});
+			if (!response.ok) {
+				throw new Error('Error during card update');
+			}
+
+			const updatedCard = await response.json();
+
+			// get().fetchBoards();
+
+			set(state => ({
+				cards: state.cards.map(c => (c.id === cardId ? updatedCard : c)),
+				isLoading: false,
+			}));
+		} catch (error) {
+			console.log('Something went wrong', error);
+			set({ isLoading: false });
+		}
+	},
+
+	deleteCard: async (boardId, listId, cardId) => {
+		try {
+			const card = get().cards.find(card => card.id === cardId);
+			if (!card) {
+				throw new Error('Card not found');
+			}
+
+			const response = await fetch(`/api/boards/${boardId}/lists/${listId}/cards/${cardId}`, {
+				method: 'DELETE',
+			});
+
+			if (!response.ok) {
+				throw new Error('Error during card deletion');
+			}
+
+			const deletedCard = get().cards.find(c => c.id === cardId);
+			if (deletedCard) {
+				set(state => ({
+					cards: state.cards.filter(c => c.id !== cardId),
+				}));
+			}
+		} catch (error) {
+			console.error('Something went wrong', error);
 		}
 	},
 }));

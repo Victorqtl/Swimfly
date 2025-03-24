@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-const cardSchema = z.object({
+export const cardSchema = z.object({
 	title: z.string().min(1, 'Title required'),
 	order: z.number(),
 	description: z.string().optional(),
@@ -97,11 +97,6 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 				...validedData,
 				listId: listId,
 			},
-		});
-
-		await prisma.board.update({
-			where: { id: boardId },
-			data: { updatedAt: new Date() },
 		});
 
 		return NextResponse.json(newCard);

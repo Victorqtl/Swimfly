@@ -46,7 +46,7 @@ export async function GET() {
 				userId: session.user.id,
 			},
 			orderBy: {
-				updatedAt: 'desc',
+				createdAt: 'asc',
 			},
 		});
 

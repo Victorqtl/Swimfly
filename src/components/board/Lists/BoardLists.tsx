@@ -40,7 +40,9 @@ export default function BoardList() {
 		setLocalListTitle(list.title);
 	};
 
-	const saveChanges = (listId: string, currentListTitle: string) => {
+	const saveChanges = (listId: string, currentListTitle: string, e: React.FormEvent) => {
+		e.preventDefault();
+
 		if (localListTitle.trim() !== '' && localListTitle !== currentListTitle) {
 			updateList(listId, boardId!, localListTitle);
 		}
@@ -50,7 +52,7 @@ export default function BoardList() {
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, listId: string, currentTitle: string) => {
 		if (e.key === 'Enter') {
-			saveChanges(listId, currentTitle);
+			saveChanges(listId, currentTitle, e);
 		} else if (e.key === 'Escape') {
 			setToggleInputTitle(false);
 			setListId(null);
@@ -77,7 +79,7 @@ export default function BoardList() {
 								onChange={e => setLocalListTitle(e.target.value)}
 								autoFocus
 								onFocus={e => e.target.select()}
-								onBlur={() => saveChanges(list.id, list.title)}
+								onBlur={e => saveChanges(list.id, list.title, e)}
 								onKeyDown={e => handleKeyDown(e, list.id, list.title)}
 								className='px-2 py-1 bg-gray-800 text-white rounded-xs outline-blue-400 w-full'
 							/>
