@@ -14,7 +14,6 @@ export default function BoardList() {
 	const [toggleInputTitle, setToggleInputTitle] = useState(false);
 	const [showAddCard, setShowAddCard] = useState(false);
 	const actionsRef = useRef<HTMLDivElement>(null);
-	console.log(listId);
 
 	const resetActionsList = useCallback(() => {
 		setToggleActionsList(false);

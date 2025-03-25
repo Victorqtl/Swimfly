@@ -35,14 +35,18 @@ interface KanbanState {
 	lists: List[];
 	cards: Card[];
 	openBoardModal: boolean;
+	openCardModal: boolean;
 	isLoading: boolean;
 	currentBoard: Board | null;
 	boardId: string | null;
 	listId: string | null;
+	cardId: string | null;
 
 	setBoardId: (id: string | null) => void;
 	setListId: (id: string | null) => void;
+	setCardId: (id: string | null) => void;
 	setOpenBoardModal: (open: boolean) => void;
+	setOpenCardModal: (open: boolean) => void;
 
 	fetchBoards: () => Promise<Board[]>;
 	createBoard: (title: string) => Promise<Board>;
@@ -72,17 +76,21 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	cards: [],
 	currentBoard: null,
 	openBoardModal: false,
+	openCardModal: false,
 	isLoading: false,
 	boardId: null,
 	listId: null,
+	cardId: null,
 
 	setOpenBoardModal: open => set({ openBoardModal: open }),
+	setOpenCardModal: open => set({ openCardModal: open }),
 
 	setBoardId: id => set({ boardId: id }),
 	setListId: id => set({ listId: id }),
+	setCardId: id => set({ cardId: id }),
 
 	fetchBoards: async () => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const response = await fetch('/api/boards');
 			if (!response.ok) {
@@ -98,7 +106,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	getBoard: async boardId => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}`);
 			if (!response.ok) {
@@ -190,7 +198,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	fetchLists: async (boardId: string) => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}/lists`);
 			if (!response.ok) {
@@ -290,7 +298,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	fetchCards: async (boardId, listId) => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const list = get().lists.find(list => list.id === listId);
 			if (!list) throw new Error('List not found');
@@ -350,7 +358,6 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	updateCard: async (boardId, listId, cardId, data) => {
-		// set({ isLoading: true });
 		try {
 			const card = get().cards.find(card => card.id === cardId);
 			if (!card) {
@@ -372,15 +379,11 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			const updatedCard = await response.json();
 
-			// get().fetchBoards();
-
 			set(state => ({
 				cards: state.cards.map(c => (c.id === cardId ? updatedCard : c)),
-				isLoading: false,
 			}));
 		} catch (error) {
 			console.log('Something went wrong', error);
-			set({ isLoading: false });
 		}
 	},
 
