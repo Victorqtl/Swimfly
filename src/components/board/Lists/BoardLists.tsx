@@ -1,6 +1,6 @@
 import { useKanbanStore } from '@/store/useKanbanStore';
 import AddList from './AddList';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Ellipsis } from 'lucide-react';
 import { Plus } from 'lucide-react';
 import ListActions from './ListActions';
@@ -14,16 +14,19 @@ export default function BoardList() {
 	const [toggleInputTitle, setToggleInputTitle] = useState(false);
 	const [showAddCard, setShowAddCard] = useState(false);
 	const actionsRef = useRef<HTMLDivElement>(null);
-
-	const resetActionsList = useCallback(() => {
-		setToggleActionsList(false);
-		setListId(null);
-	}, [setListId]);
+	const ellipsisButtonRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-			if (actionsRef.current && !actionsRef.current.contains(event.target as Node)) {
-				resetActionsList();
+			if (
+				(actionsRef.current && actionsRef.current.contains(event.target as Node)) ||
+				(ellipsisButtonRef.current && ellipsisButtonRef.current.contains(event.target as Node))
+			) {
+				return;
+			}
+			if (toggleActionsList) {
+				setToggleActionsList(false);
+				setListId(null);
 			}
 		};
 
@@ -31,7 +34,7 @@ export default function BoardList() {
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [toggleActionsList, resetActionsList]);
+	}, [toggleActionsList, setListId]);
 
 	const handleEditStart = (list: { id: string; title: string }) => {
 		setToggleInputTitle(true);
@@ -62,8 +65,9 @@ export default function BoardList() {
 		<div
 			className='flex gap-4 p-4'
 			onKeyDown={e => {
-				if (e.key === 'Escape') {
-					resetActionsList();
+				if (e.key === 'Escape' && toggleActionsList) {
+					setToggleActionsList(false);
+					setListId(null);
 				}
 			}}>
 			{lists.map(list => (
@@ -90,12 +94,14 @@ export default function BoardList() {
 							</h2>
 						)}
 						<button
+							ref={list.id === listId ? ellipsisButtonRef : null}
 							onClick={() => {
 								if (listId === list.id) {
-									resetActionsList();
+									setToggleActionsList(false);
+									setListId(null);
 								} else {
-									setListId(list.id);
 									setToggleActionsList(true);
+									setListId(list.id);
 								}
 							}}
 							className='p-1 rounded-lg cursor-pointer hover:bg-gray-200'>
@@ -125,7 +131,11 @@ export default function BoardList() {
 						<section
 							ref={actionsRef}
 							className='z-10 absolute -right-[225px] top-14 w-[272px] p-4 flex flex-col gap-2 border rounded-lg shadow-sm bg-white'>
-							<ListActions listId={list.id} />
+							<ListActions
+								listId={list.id}
+								setShowAddCard={setShowAddCard}
+								setToggleActionsList={setToggleActionsList}
+							/>
 						</section>
 					) : null}
 				</div>
