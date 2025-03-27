@@ -1,22 +1,23 @@
 import React from 'react';
 import { useKanbanStore } from '@/store/useKanbanStore';
 import { useState } from 'react';
-import { AlignJustify, Trash } from 'lucide-react';
+import { AlignJustify, X, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function CardModal() {
-	const { cards, cardId, setOpenCardModal, updateCard, deleteCard, boardId, listId } = useKanbanStore();
+	const { cards, cardId, setOpenCardModal, updateCard, boardId, listId } = useKanbanStore();
 	const [showInputDescription, setShowInputDescription] = useState<boolean>(false);
 
 	const [localDescription, setlocalDescription] = useState<string>('');
 	return (
-		<div className='w-[768px] h-[955px] bg-white rounded-lg p-6'>
+		<div className='w-[768px] h-fit bg-white rounded-lg p-6'>
 			{cards
 				.filter(card => card.id === cardId)
 				.map(card => (
 					<div
 						key={card.id}
 						className='flex flex-col gap-6'>
+						{card.color ? <div className={`h-[100px] -m-6 mb-0 rounded-t-lg ${card.color}`}></div> : null}
 						<div className='flex items-center justify-between'>
 							<div className='flex items-center gap-2'>
 								<input
@@ -34,11 +35,10 @@ export default function CardModal() {
 							</div>
 							<button
 								onClick={() => {
-									deleteCard(boardId!, listId!, card.id);
 									setOpenCardModal(false);
 								}}
-								className='p-2 bg-red-300 hover:bg-red-400 rounded-lg cursor-pointer'>
-								<Trash size={22} />
+								className='cursor-pointer'>
+								<X size={22} />
 							</button>
 						</div>
 						<div className='flex items-center justify-between'>
@@ -59,7 +59,7 @@ export default function CardModal() {
 								!card.description ? (
 									<button
 										onClick={() => setShowInputDescription(true)}
-										className='w-full px-2 pt-2 pb-7 text-left bg-neutral-100 cursor-pointer'>
+										className='w-full px-2 pt-2 pb-7 text-left bg-neutral-100 cursor-pointer rounded-sm'>
 										Add a description...
 									</button>
 								) : (
@@ -104,6 +104,94 @@ export default function CardModal() {
 									</div>
 								</form>
 							)}
+						</div>
+						<div className='flex flex-col gap-6'>
+							<div className='flex items-center gap-2'>
+								<Palette />
+								<h4 className='text-xl'>Card color</h4>
+							</div>
+							<div className='flex gap-6 items-center mx-auto'>
+								<button
+									onClick={() =>
+										updateCard(boardId!, listId!, card.id, {
+											title: card.title,
+											color: 'bg-green-500',
+										})
+									}
+									className='w-[50px] h-[32px] bg-green-500 rounded-sm cursor-pointer'></button>
+								<button
+									onClick={() =>
+										updateCard(boardId!, listId!, card.id, {
+											title: card.title,
+											color: 'bg-yellow-500',
+										})
+									}
+									className='w-[50px] h-[32px] bg-yellow-500 rounded-sm cursor-pointer'></button>
+								<button
+									onClick={() =>
+										updateCard(boardId!, listId!, card.id, {
+											title: card.title,
+											color: 'bg-red-500',
+										})
+									}
+									className='w-[50px] h-[32px] bg-red-500 rounded-sm cursor-pointer'></button>
+								<button
+									onClick={() =>
+										updateCard(boardId!, listId!, card.id, {
+											title: card.title,
+											color: 'bg-orange-500',
+										})
+									}
+									className='w-[50px] h-[32px] bg-orange-500 rounded-sm cursor-pointer'></button>
+								<button
+									onClick={() =>
+										updateCard(boardId!, listId!, card.id, {
+											title: card.title,
+											color: 'bg-purple-500',
+										})
+									}
+									className='w-[50px] h-[32px] bg-purple-500 rounded-sm cursor-pointer'></button>
+								<button
+									onClick={() =>
+										updateCard(boardId!, listId!, card.id, {
+											title: card.title,
+											color: 'bg-blue-500',
+										})
+									}
+									className='w-[50px] h-[32px] bg-blue-500 rounded-sm cursor-pointer'></button>
+								<button
+									onClick={() =>
+										updateCard(boardId!, listId!, card.id, {
+											title: card.title,
+											color: 'bg-cyan-500',
+										})
+									}
+									className='w-[50px] h-[32px] bg-cyan-500 rounded-sm cursor-pointer'></button>
+								<button
+									onClick={() =>
+										updateCard(boardId!, listId!, card.id, {
+											title: card.title,
+											color: 'bg-pink-500',
+										})
+									}
+									className='w-[50px] h-[32px] bg-pink-500 rounded-sm cursor-pointer'></button>
+								<button
+									onClick={() =>
+										updateCard(boardId!, listId!, card.id, {
+											title: card.title,
+											color: 'bg-gray-500',
+										})
+									}
+									className='w-[50px] h-[32px] bg-gray-500 rounded-sm cursor-pointer'></button>
+								<button
+									onClick={() =>
+										updateCard(boardId!, listId!, card.id, {
+											title: card.title,
+											color: 'bg-black',
+										})
+									}
+									className='w-[50px] h-[32px] bg-black rounded-sm cursor-pointer'></button>
+							</div>
 						</div>
 					</div>
 				))}

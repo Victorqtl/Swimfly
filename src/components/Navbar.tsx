@@ -7,7 +7,7 @@ export default async function Navbar() {
 	const session = await auth();
 
 	return (
-		<div className='w-[90%] mx-auto mt-3 z-50 rounded-xl bg-white border-[1px] border-gray-100 shadow-input shadow-md hover:shadow-lg transition-shadow ease-in-out duration-400'>
+		<div className='w-[90%] mx-auto mt-3 z-50 rounded-xl bg-white border-[1px] border-gray-100 shadow-input shadow-xs hover:shadow-md transition-shadow ease-in-out duration-400'>
 			<div className='flex justify-between items-center p-4 '>
 				<Link
 					className='text-4xl text-blue-400 font-bold'

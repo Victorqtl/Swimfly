@@ -49,9 +49,9 @@ interface KanbanState {
 	setOpenCardModal: (open: boolean) => void;
 
 	fetchBoards: () => Promise<Board[]>;
-	createBoard: (title: string) => Promise<Board>;
+	createBoard: (data: { title: string; color?: string }) => Promise<Board>;
 	getBoard: (boardId: string) => Promise<void>;
-	updateBoardTitle: (boardId: string, title: string) => Promise<void>;
+	updateBoard: (boardId: string, data: { title: string; color?: string }) => Promise<void>;
 	deleteBoard: (boardId: string) => Promise<void>;
 
 	fetchLists: (boardId: string) => Promise<List[]>;
@@ -121,13 +121,13 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 		}
 	},
 
-	createBoard: async title => {
+	createBoard: async data => {
 		// set({ isLoading: true });
 		try {
 			const response = await fetch('/api/boards', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ title }),
+				body: JSON.stringify({ ...data }),
 			});
 
 			if (!response.ok) {
@@ -148,13 +148,13 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 		}
 	},
 
-	updateBoardTitle: async (boardId, title) => {
+	updateBoard: async (boardId, data) => {
 		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ title }),
+				body: JSON.stringify({ ...data }),
 			});
 
 			if (!response.ok) {

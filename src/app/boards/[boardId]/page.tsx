@@ -51,7 +51,7 @@ export default function BoardPage() {
 	}
 
 	return (
-		<div className='flex flex-col'>
+		<div className={`flex flex-col ${currentBoard!.color}`}>
 			<BoardHeader />
 			<div className='overflow-x-auto min-h-[calc(100vh-152px)]'>
 				<BoardLists />

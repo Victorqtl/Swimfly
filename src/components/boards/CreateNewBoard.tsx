@@ -15,6 +15,7 @@ const formSchema = z.object({
 	title: z.string().min(1, {
 		message: 'Title required',
 	}),
+	color: z.string().optional(),
 });
 
 export function CreateNewBoard() {
@@ -24,11 +25,12 @@ export function CreateNewBoard() {
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			title: '',
+			color: 'bg-white',
 		},
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const newBoard = await createBoard(values.title);
+		const newBoard = await createBoard(values);
 		if (!newBoard) return;
 		setOpenBoardModal(false);
 		router.push(`/boards/${newBoard.id}`);
@@ -50,6 +52,41 @@ export function CreateNewBoard() {
 									placeholder='First board'
 									{...field}
 								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name='color'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Board Wallpaper</FormLabel>
+							<FormControl>
+								<div className='flex flex-wrap gap-3 items-center justify-center'>
+									{[
+										'bg-green-500',
+										'bg-yellow-500',
+										'bg-red-500',
+										'bg-orange-500',
+										'bg-purple-500',
+										'bg-blue-500',
+										'bg-cyan-500',
+										'bg-pink-500',
+										'bg-gray-500',
+										'bg-white',
+									].map(color => (
+										<button
+											key={color}
+											type='button'
+											onClick={() => field.onChange(color)}
+											className={`w-[40px] h-[25px] ${color} rounded-sm cursor-pointer border border-neutral-300 ${
+												field.value === color ? 'border-0 ring-2 ring-neutral-300' : ''
+											}`}
+										/>
+									))}
+								</div>
 							</FormControl>
 							<FormMessage />
 						</FormItem>

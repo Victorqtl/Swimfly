@@ -4,13 +4,13 @@ import { useState } from 'react';
 import { Button } from '../ui/button';
 
 export default function BoardHeader() {
-	const { currentBoard, updateBoardTitle, deleteBoard, boardId } = useKanbanStore();
+	const { currentBoard, updateBoard, deleteBoard, boardId } = useKanbanStore();
 	const [handleInput, setHandleInput] = useState(false);
 	const [localTitle, setLocalTitle] = useState(`${currentBoard!.title}`);
 
 	const saveChanges = () => {
 		if (localTitle.trim() !== '' && localTitle !== currentBoard!.title) {
-			updateBoardTitle(boardId!, localTitle);
+			updateBoard(boardId!, { title: localTitle });
 		}
 		setHandleInput(false);
 	};
@@ -24,7 +24,7 @@ export default function BoardHeader() {
 	};
 
 	return (
-		<div className='flex items-center justify-between h-16 pl-2 pr-24 bg-gray-700/30'>
+		<div className='flex items-center justify-between h-16 pl-2 pr-24 bg-neutral-700/20'>
 			<div>
 				{!handleInput ? (
 					<h1

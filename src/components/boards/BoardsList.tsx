@@ -27,7 +27,7 @@ export default function BoardsList() {
 					? boards.map(board => (
 							<li
 								key={board.id}
-								className='h-24 rounded-lg bg-blue-400 text-white hover:bg-blue-500'>
+								className={`h-24 rounded-lg ${board.color}`}>
 								<Link href={`/boards/${board.id}`}>
 									<div className='h-full w-full p-2'>
 										<p className='text-base'>{board.title}</p>
