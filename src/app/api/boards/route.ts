@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { z } from 'zod';
 
@@ -8,7 +8,7 @@ const boardSchema = z.object({
 	color: z.string().optional(),
 });
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
 	try {
 		const session = await auth();
 
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const body = await req.json();
+		const body = await request.json();
 		const validedData = boardSchema.parse(body);
 
 		const newBoard = await prisma.board.create({

@@ -1,8 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
 
-export async function PATCH(req: Request, { params }: { params: { listId: string; boardId: string } }) {
+const updateListSchema = z.object({
+	title: z.string().min(1),
+	order: z.number().optional(),
+});
+
+type Props = {
+	params: Promise<{
+		boardId: string;
+		listId: string;
+	}>;
+};
+
+export async function PATCH(request: NextRequest, props: Props) {
 	try {
 		const session = await auth();
 
@@ -10,7 +23,7 @@ export async function PATCH(req: Request, { params }: { params: { listId: string
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const { listId, boardId } = params;
+		const { listId, boardId } = await props.params;
 
 		const board = await prisma.board.findUnique({
 			where: {
@@ -23,20 +36,16 @@ export async function PATCH(req: Request, { params }: { params: { listId: string
 			return NextResponse.json({ error: 'Board not found' }, { status: 404 });
 		}
 
-		const { title } = await req.json();
+		const body = await request.json();
 
-		if (!title) {
-			return NextResponse.json({ error: 'Title required' }, { status: 400 });
-		}
+		const validedData = updateListSchema.parse(body);
 
 		const list = await prisma.list.update({
 			where: {
 				id: listId,
 				boardId: boardId,
 			},
-			data: {
-				title,
-			},
+			data: validedData,
 		});
 
 		return NextResponse.json(list);
@@ -46,7 +55,7 @@ export async function PATCH(req: Request, { params }: { params: { listId: string
 	}
 }
 
-export async function DELETE(req: Request, { params }: { params: { listId: string; boardId: string } }) {
+export async function DELETE(request: NextRequest, props: Props) {
 	try {
 		const session = await auth();
 
@@ -54,7 +63,7 @@ export async function DELETE(req: Request, { params }: { params: { listId: strin
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const { listId, boardId } = params;
+		const { listId, boardId } = await props.params;
 
 		const board = await prisma.board.findUnique({
 			where: {

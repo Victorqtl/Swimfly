@@ -1,14 +1,23 @@
 import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-// import { z } from 'zod';
+import { z } from 'zod';
 
-// const listSchema;
+const listSchema = z.object({
+	title: z.string().min(1, 'Title required'),
+	order: z.number(),
+});
 
-export async function GET(req: Request, { params }: { params: { boardId: string } }) {
+type Props = {
+	params: Promise<{
+		boardId: string;
+	}>;
+};
+
+export async function GET(request: NextRequest, props: Props) {
 	try {
 		const session = await auth();
-		const { boardId } = params;
+		const { boardId } = await props.params;
 
 		if (!session) {
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
@@ -46,7 +55,7 @@ export async function GET(req: Request, { params }: { params: { boardId: string 
 	}
 }
 
-export async function POST(req: Request, { params }: { params: { boardId: string } }) {
+export async function POST(request: NextRequest, props: Props) {
 	try {
 		const session = await auth();
 
@@ -54,7 +63,7 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const { boardId } = params;
+		const { boardId } = await props.params;
 
 		const board = await prisma.board.findUnique({
 			where: {
@@ -66,23 +75,13 @@ export async function POST(req: Request, { params }: { params: { boardId: string
 			return NextResponse.json({ error: 'Board not found' }, { status: 404 });
 		}
 
-		const { title } = await req.json();
-		if (!title) {
-			return NextResponse.json({ error: 'Title required' }, { status: 400 });
-		}
-
-		const lastList = await prisma.list.findFirst({
-			where: { boardId },
-			orderBy: { order: 'desc' },
-		});
-
-		const newOrder = lastList ? lastList.order + 1 : 1;
+		const body = await request.json();
+		const validedData = listSchema.parse(body);
 
 		const newList = await prisma.list.create({
 			data: {
-				title,
-				order: newOrder,
-				boardId,
+				...validedData,
+				boardId: boardId,
 			},
 		});
 

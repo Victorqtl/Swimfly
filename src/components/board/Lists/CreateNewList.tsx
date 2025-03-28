@@ -26,7 +26,7 @@ export function CreateNewList({ setShowAddList }: { setShowAddList: (show: boole
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		if (boardId) {
-			await createList(boardId, values.title);
+			await createList(boardId, values);
 			setShowAddList(false);
 		}
 	}

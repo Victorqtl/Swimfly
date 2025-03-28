@@ -33,7 +33,7 @@ export default function ListActions({
 				</li>
 				<li className='py-2 hover:bg-gray-100 hover:-mx-4 hover:px-4 cursor-pointer'>Change list color</li>
 				<li
-					onClick={() => deleteList(listId, boardId!)}
+					onClick={() => deleteList(boardId!, listId)}
 					className='flex justify-between items-center py-2 hover:bg-red-200 hover:-mx-4 hover:px-4 cursor-pointer'>
 					<p>Delete list</p>
 					<Trash2 size={16} />

@@ -46,7 +46,7 @@ export default function BoardList() {
 		e.preventDefault();
 
 		if (localListTitle.trim() !== '' && localListTitle !== currentListTitle) {
-			updateList(listId, boardId!, localListTitle);
+			updateList(boardId!, listId, { title: localListTitle });
 		}
 		setToggleInputTitle(false);
 		setListId(null);

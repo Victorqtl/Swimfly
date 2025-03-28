@@ -1,17 +1,25 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 const updateCardSchema = z.object({
-	title: z.string(),
+	title: z.string().min(1),
 	description: z.string().optional(),
 	color: z.string().optional(),
 	archived: z.boolean().optional(),
 	order: z.number().optional(),
 });
 
-export async function PATCH(req: Request, { params }: { params: { boardId: string; listId: string; cardId: string } }) {
+type Props = {
+	params: Promise<{
+		boardId: string;
+		listId: string;
+		cardId: string;
+	}>;
+};
+
+export async function PATCH(request: NextRequest, props: Props) {
 	try {
 		const session = await auth();
 
@@ -19,7 +27,7 @@ export async function PATCH(req: Request, { params }: { params: { boardId: strin
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const { cardId, listId, boardId } = params;
+		const { cardId, listId, boardId } = await props.params;
 
 		const board = await prisma.board.findUnique({
 			where: {
@@ -53,7 +61,7 @@ export async function PATCH(req: Request, { params }: { params: { boardId: strin
 		if (!card) {
 			return NextResponse.json({ error: 'Card not found' }, { status: 404 });
 		}
-		const body = await req.json();
+		const body = await request.json();
 		const validedData = updateCardSchema.parse(body);
 
 		const updatedCard = await prisma.card.update({
@@ -76,10 +84,7 @@ export async function PATCH(req: Request, { params }: { params: { boardId: strin
 	}
 }
 
-export async function DELETE(
-	req: Request,
-	{ params }: { params: { boardId: string; listId: string; cardId: string } }
-) {
+export async function DELETE(request: NextRequest, props: Props) {
 	try {
 		const session = await auth();
 
@@ -87,7 +92,7 @@ export async function DELETE(
 			return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 		}
 
-		const { boardId, listId, cardId } = params;
+		const { boardId, listId, cardId } = await props.params;
 
 		const board = await prisma.board.findUnique({
 			where: {

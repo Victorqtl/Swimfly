@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export interface Card {
+export type Card = {
 	id: string;
 	title: string;
 	description?: string;
@@ -10,9 +10,9 @@ export interface Card {
 	listId: string;
 	createdAt: Date;
 	updatedAt: Date;
-}
+};
 
-export interface List {
+export type List = {
 	id: string;
 	title: string;
 	order: number;
@@ -20,17 +20,18 @@ export interface List {
 	cards: Card[];
 	createdAt: Date;
 	updatedAt: Date;
-}
+};
 
-export interface Board {
+export type Board = {
 	id: string;
 	title: string;
+	color?: string;
 	lists: List[];
 	createdAt: Date;
 	updatedAt: Date;
-}
+};
 
-interface KanbanState {
+type KanbanState = {
 	boards: Board[];
 	lists: List[];
 	cards: Card[];
@@ -55,8 +56,8 @@ interface KanbanState {
 	deleteBoard: (boardId: string) => Promise<void>;
 
 	fetchLists: (boardId: string) => Promise<List[]>;
-	createList: (boardId: string, title: string) => Promise<List>;
-	updateList: (listId: string, boardId: string, title: string) => Promise<void>;
+	createList: (boardId: string, data: { title: string }) => Promise<List>;
+	updateList: (boardId: string, listId: string, data: { title: string; order?: number }) => Promise<void>;
 	deleteList: (listId: string, boardId: string) => Promise<void>;
 
 	fetchCards: (boardId: string, listId: string) => Promise<Card[]>;
@@ -68,7 +69,7 @@ interface KanbanState {
 		data: { title: string; description?: string; color?: string; archived?: boolean; order?: number }
 	) => Promise<void>;
 	deleteCard: (boardId: string, listId: string, cardId: string) => Promise<void>;
-}
+};
 
 export const useKanbanStore = create<KanbanState>((set, get) => ({
 	boards: [],
@@ -216,13 +217,19 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 		}
 	},
 
-	createList: async (boardId, title) => {
+	createList: async (boardId, data) => {
 		// set({ isLoading: true });
 		try {
+			const board = get().boards.find(board => board.id === boardId);
+			if (!board) throw new Error('Board not found');
+
+			const lists = get().lists.filter(list => list.boardId === boardId);
+			const order = lists.length > 0 ? Math.max(...lists.map(list => list.order)) + 1 : 1;
+
 			const response = await fetch(`/api/boards/${boardId}/lists`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ title }),
+				body: JSON.stringify({ ...data, order }),
 			});
 
 			if (!response.ok) {
@@ -246,7 +253,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 		}
 	},
 
-	updateList: async (listId, boardId, title) => {
+	updateList: async (boardId, listId, data) => {
 		// set({ isLoading: true });
 		try {
 			const list = get().lists.find(l => l.id === listId);
@@ -255,7 +262,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			const response = await fetch(`/api/boards/${boardId}/lists/${listId}`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ title }),
+				body: JSON.stringify({ ...data }),
 			});
 
 			if (!response.ok) {
@@ -276,7 +283,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 		}
 	},
 
-	deleteList: async (listId, boardId) => {
+	deleteList: async (boardId, listId) => {
 		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}/lists/${listId}`, {
