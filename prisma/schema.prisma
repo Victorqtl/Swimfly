@@ -5,6 +5,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 model User {
@@ -74,12 +75,11 @@ model Board {
 }
 
 model List {
-  id      String  @id @default(cuid())
+  id      String @id @default(cuid())
   title   String
   order   Int
-  color   String?
   boardId String
-  board   Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   cards   Card[]
 
   createdAt DateTime @default(now())
