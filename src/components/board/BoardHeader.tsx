@@ -1,7 +1,6 @@
 import { useKanbanStore } from '@/store/useKanbanStore';
 import { redirect } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
-import { Button } from '../ui/button';
 import { Ellipsis, Trash } from 'lucide-react';
 
 export default function BoardHeader() {

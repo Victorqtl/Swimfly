@@ -54,7 +54,8 @@ export default function CardModal() {
 								{!showInputTitle ? (
 									<h3
 										onClick={() => {
-											setShowInputTitle(true), setLocalCardTitle(card.title);
+											setShowInputTitle(true);
+											setLocalCardTitle(card.title);
 										}}
 										className='px-1 py-1 text-xl cursor-pointer'>
 										{card.title}
@@ -76,7 +77,8 @@ export default function CardModal() {
 								{card.archived && (
 									<button
 										onClick={() => {
-											deleteCard(boardId!, listId!, cardId!), setOpenCardModal(false);
+											deleteCard(boardId!, listId!, cardId!);
+											setOpenCardModal(false);
 										}}
 										className='cursor-pointer'>
 										<Trash size={20} />
