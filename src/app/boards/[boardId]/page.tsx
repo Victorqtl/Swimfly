@@ -39,8 +39,8 @@ export default function BoardPage() {
 		return (
 			<div className='flex justify-center w-full mt-44'>
 				<div className='flex flex-col items-center gap-2'>
-					<div className='h-10 w-10 border-4 border-primary border-t-transparent rounded-full animate-spin'></div>
-					<p className='text-lg'>Loading board...</p>
+					<span className='loading loading-bars loading-xl'></span>
+					<p className='text-base'>Loading board...</p>
 				</div>
 			</div>
 		);

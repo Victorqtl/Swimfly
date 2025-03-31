@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { useKanbanStore } from '@/store/useKanbanStore';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -28,12 +29,26 @@ export function CreateNewBoard() {
 			color: 'bg-white',
 		},
 	});
+	const [isCreating, setIsCreating] = useState(false);
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const newBoard = await createBoard(values);
-		if (!newBoard) return;
-		setOpenBoardModal(false);
-		router.push(`/boards/${newBoard.id}`);
+		setIsCreating(true);
+		try {
+			const newBoard = await createBoard(values);
+
+			if (!newBoard) {
+				setIsCreating(false);
+				return;
+			}
+
+			setOpenBoardModal(false);
+
+			router.push(`/boards/${newBoard.id}`);
+			setIsCreating(false);
+		} catch (error) {
+			console.error('Error creating board:', error);
+			setIsCreating(false);
+		}
 	}
 	return (
 		<Form {...form}>
@@ -66,15 +81,15 @@ export function CreateNewBoard() {
 							<FormControl>
 								<div className='flex flex-wrap gap-3 items-center justify-center'>
 									{[
-										'bg-green-500',
-										'bg-yellow-500',
-										'bg-red-500',
-										'bg-orange-500',
-										'bg-purple-500',
-										'bg-blue-500',
-										'bg-cyan-500',
-										'bg-pink-500',
-										'bg-gray-500',
+										'bg-gradient-to-b from-green-200 to-green-400',
+										'bg-gradient-to-b from-yellow-200 to-yellow-400',
+										'bg-gradient-to-b from-red-200 to-red-400',
+										'bg-gradient-to-b from-orange-200 to-orange-400',
+										'bg-gradient-to-b from-purple-200 to-purple-400',
+										'bg-gradient-to-b from-blue-200 to-blue-400',
+										'bg-gradient-to-b from-cyan-200 to-cyan-400',
+										'bg-gradient-to-b from-pink-200 to-pink-400',
+										'bg-gradient-to-b from-gray-200 to-gray-400',
 										'bg-white',
 									].map(color => (
 										<button
@@ -96,7 +111,7 @@ export function CreateNewBoard() {
 					type='submit'
 					variant='blue'
 					disabled={isLoading}>
-					Submit
+					{isCreating ? <span className='loading loading-spinner text-info'></span> : <span>Submit</span>}
 				</Button>
 				<button
 					type='button'

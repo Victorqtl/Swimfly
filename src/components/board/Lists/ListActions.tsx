@@ -31,12 +31,13 @@ export default function ListActions({
 				<li className='py-2 hover:bg-gray-100 hover:-mx-4 hover:px-4 cursor-pointer'>
 					<p>Sort by...</p>
 				</li>
-				<li className='py-2 hover:bg-gray-100 hover:-mx-4 hover:px-4 cursor-pointer'>Change list color</li>
 				<li
 					onClick={() => deleteList(boardId!, listId)}
-					className='flex justify-between items-center py-2 hover:bg-red-200 hover:-mx-4 hover:px-4 cursor-pointer'>
-					<p>Delete list</p>
-					<Trash2 size={16} />
+					className='hover:-mx-4'>
+					<button className='w-full flex justify-between items-center py-2 hover:bg-red-200 hover:px-4 cursor-pointer'>
+						<p>Delete list</p>
+						<Trash2 size={16} />
+					</button>
 				</li>
 			</ul>
 		</>

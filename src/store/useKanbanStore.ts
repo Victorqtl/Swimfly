@@ -128,9 +128,9 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			const response = await fetch('/api/boards', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ ...data }),
+				body: JSON.stringify(data),
 			});
-
+			console.log(response);
 			if (!response.ok) {
 				throw new Error('Error during board creation');
 			}
@@ -138,13 +138,12 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			const board = await response.json();
 			set(state => ({
 				boards: [...state.boards, board],
-				openModal: false,
+				openBoardModal: false,
 				isLoading: false,
 			}));
-			// get().fetchBoards();
 			return board;
 		} catch (error) {
-			console.error('Something went wrong', error);
+			console.error('Something went wrong:', error);
 			set({ isLoading: false });
 		}
 	},

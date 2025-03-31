@@ -1,25 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
   id            String    @id @default(cuid())
-  name          String
   email         String    @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   emailVerified DateTime?
-  password      String?
   image         String?
+  name          String
+  password      String?
   accounts      Account[]
-  sessions      Session[]
   boards        Board[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  sessions      Session[]
 }
 
 model Account {
@@ -34,11 +33,9 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
 }
@@ -47,10 +44,9 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -62,39 +58,36 @@ model VerificationToken {
 }
 
 model Board {
-  id     String  @id @default(cuid())
-  title  String
-  color  String?
-  userId String
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lists  List[]
-
+  id        String   @id @default(cuid())
+  title     String
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  color     String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lists     List[]
 }
 
 model List {
-  id      String @id @default(cuid())
-  title   String
-  order   Int
-  boardId String
-  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  cards   Card[]
-
+  id        String   @id @default(cuid())
+  title     String
+  order     Int
+  boardId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  cards     Card[]
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
 }
 
 model Card {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   description String?
   order       Int
   color       String?
-  archived    Boolean @default(false)
+  archived    Boolean  @default(false)
   listId      String
-  list        List    @relation(fields: [listId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  list        List     @relation(fields: [listId], references: [id], onDelete: Cascade)
 }

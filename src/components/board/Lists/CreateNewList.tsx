@@ -36,7 +36,7 @@ export function CreateNewList({ setShowAddList }: { setShowAddList: (show: boole
 			<form
 				onBlur={() => setShowAddList(false)}
 				onSubmit={form.handleSubmit(onSubmit)}
-				className='flex flex-col gap-2 w-[272px] p-4 bg-neutral-300 rounded-lg shadow-sm'>
+				className='flex flex-col gap-2 w-[272px] p-4 bg-neutral-200 rounded-lg shadow-sm'>
 				<FormField
 					control={form.control}
 					name='title'

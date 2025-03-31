@@ -20,14 +20,16 @@ export default function BoardsList() {
 				<Button
 					onClick={() => setOpenBoardModal(true)}
 					size='xl'
-					className='bg-zinc-500 hover:bg-zinc-600'>
+					className='text-base bg-zinc-500 hover:bg-zinc-600'>
 					Create a new board
 				</Button>
 				{boards && boards.length > 0
 					? boards.map(board => (
 							<li
 								key={board.id}
-								className={`h-24 rounded-lg ${board.color}`}>
+								className={`h-24 rounded-lg hover:brightness-90 ${board.color} ${
+									board.color === 'bg-white' ? 'border-2' : 'border-0'
+								}`}>
 								<Link href={`/boards/${board.id}`}>
 									<div className='h-full w-full p-2'>
 										<p className='text-base'>{board.title}</p>

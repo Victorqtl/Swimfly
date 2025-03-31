@@ -11,7 +11,7 @@ export default function BoardList() {
 	const { lists, boardId, updateList, setListId, listId } = useKanbanStore();
 	const [localListTitle, setLocalListTitle] = useState<string>('');
 	const [toggleActionsList, setToggleActionsList] = useState(false);
-	const [toggleInputTitle, setToggleInputTitle] = useState(false);
+	const [showInputTitle, setShowInputTitle] = useState(false);
 	const [showAddCard, setShowAddCard] = useState(false);
 	const actionsRef = useRef<HTMLDivElement>(null);
 	const ellipsisButtonRef = useRef<HTMLButtonElement>(null);
@@ -37,7 +37,7 @@ export default function BoardList() {
 	}, [toggleActionsList, setListId]);
 
 	const handleEditStart = (list: { id: string; title: string }) => {
-		setToggleInputTitle(true);
+		setShowInputTitle(true);
 		setListId(list.id);
 		setLocalListTitle(list.title);
 	};
@@ -48,7 +48,7 @@ export default function BoardList() {
 		if (localListTitle.trim() !== '' && localListTitle !== currentListTitle) {
 			updateList(boardId!, listId, { title: localListTitle });
 		}
-		setToggleInputTitle(false);
+		setShowInputTitle(false);
 		setListId(null);
 	};
 
@@ -56,7 +56,7 @@ export default function BoardList() {
 		if (e.key === 'Enter') {
 			saveChanges(listId, currentTitle, e);
 		} else if (e.key === 'Escape') {
-			setToggleInputTitle(false);
+			setShowInputTitle(false);
 			setListId(null);
 		}
 	};
@@ -73,15 +73,14 @@ export default function BoardList() {
 			{lists.map(list => (
 				<div
 					key={list.id}
-					className='flex flex-col gap-2 relative w-[272px] h-fit p-4 bg-neutral-300 rounded-lg shadow-sm shrink-0'>
+					className='flex flex-col gap-2 relative w-[272px] h-fit p-4 bg-neutral-200 rounded-lg shadow-sm shrink-0'>
 					<div className='flex justify-between items-center'>
-						{toggleInputTitle && listId === list.id ? (
+						{showInputTitle && listId === list.id ? (
 							<input
 								type='text'
 								value={localListTitle}
 								onChange={e => setLocalListTitle(e.target.value)}
 								autoFocus
-								onFocus={e => e.target.select()}
 								onBlur={e => saveChanges(list.id, list.title, e)}
 								onKeyDown={e => handleKeyDown(e, list.id, list.title)}
 								className='px-2 py-1 bg-gray-800 text-white rounded-xs outline-blue-400 w-full'
@@ -104,7 +103,7 @@ export default function BoardList() {
 									setListId(list.id);
 								}
 							}}
-							className='p-1 rounded-lg cursor-pointer hover:bg-gray-200'>
+							className='p-1 rounded-lg cursor-pointer hover:bg-gray-100'>
 							<Ellipsis />
 						</button>
 					</div>
