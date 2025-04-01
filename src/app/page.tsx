@@ -9,7 +9,7 @@ export default function page() {
 			<Image
 				src={BlueGradient}
 				alt='Blue gradient'
-				className='absolute top-0 h-screen'
+				className='absolute top-0 w-full h-screen'
 			/>
 			<div className='absolute top-[20%] left-[50%] -translate-x-[50%] flex flex-col gap-10'>
 				<h1 className='text-8xl text-center'>

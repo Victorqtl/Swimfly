@@ -91,7 +91,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	setCardId: id => set({ cardId: id }),
 
 	fetchBoards: async () => {
-		// set({ isLoading: true });
+		set({ isLoading: true });
 		try {
 			const response = await fetch('/api/boards');
 			if (!response.ok) {
@@ -107,7 +107,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	getBoard: async boardId => {
-		// set({ isLoading: true });
+		set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}`);
 			if (!response.ok) {
@@ -123,7 +123,6 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	createBoard: async data => {
-		// set({ isLoading: true });
 		try {
 			const response = await fetch('/api/boards', {
 				method: 'POST',
@@ -139,17 +138,14 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			set(state => ({
 				boards: [...state.boards, board],
 				openBoardModal: false,
-				isLoading: false,
 			}));
 			return board;
 		} catch (error) {
 			console.error('Something went wrong:', error);
-			set({ isLoading: false });
 		}
 	},
 
 	updateBoard: async (boardId, data) => {
-		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}`, {
 				method: 'PATCH',
@@ -167,16 +163,13 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			set(state => ({
 				currentBoard: state.currentBoard?.id === boardId ? updatedBoard : state.currentBoard,
-				isLoading: false,
 			}));
 		} catch (error) {
 			console.error('Something went wrong', error);
-			set({ isLoading: false });
 		}
 	},
 
 	deleteBoard: async boardId => {
-		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}`, {
 				method: 'DELETE',
@@ -189,16 +182,14 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			set(state => ({
 				boards: state.boards.filter(board => board.id !== boardId),
 				currentBoard: state.currentBoard?.id === boardId ? null : state.currentBoard,
-				isLoading: false,
 			}));
 		} catch (error) {
 			console.error('Something went wrong', error);
-			set({ isLoading: false });
 		}
 	},
 
 	fetchLists: async (boardId: string) => {
-		// set({ isLoading: true });
+		set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}/lists`);
 			if (!response.ok) {
@@ -217,7 +208,6 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	createList: async (boardId, data) => {
-		// set({ isLoading: true });
 		try {
 			const board = get().boards.find(board => board.id === boardId);
 			if (!board) throw new Error('Board not found');
@@ -237,23 +227,18 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			const list = await response.json();
 
-			// get().fetchBoards();
-
 			set(state => ({
 				lists: [...state.lists, list],
 				openModal: false,
-				isLoading: false,
 			}));
 
 			return list;
 		} catch (error) {
 			console.error('Something went wrong', error);
-			set({ isLoading: false });
 		}
 	},
 
 	updateList: async (boardId, listId, data) => {
-		// set({ isLoading: true });
 		try {
 			const list = get().lists.find(l => l.id === listId);
 			if (!list) throw new Error('List not found');
@@ -270,20 +255,15 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			const updatedList = await response.json();
 
-			// get().fetchBoards();
-
 			set(state => ({
 				lists: state.lists.map(l => (l.id === listId ? updatedList : l)),
-				isLoading: false,
 			}));
 		} catch (error) {
 			console.error('Something went wrong', error);
-			set({ isLoading: false });
 		}
 	},
 
 	deleteList: async (boardId, listId) => {
-		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}/lists/${listId}`, {
 				method: 'DELETE',
@@ -295,16 +275,14 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			set(state => ({
 				lists: state.lists.filter(list => list.id !== listId),
-				isLoading: false,
 			}));
 		} catch (error) {
 			console.error('Something went wrong', error);
-			set({ isLoading: false });
 		}
 	},
 
 	fetchCards: async (boardId, listId) => {
-		// set({ isLoading: true });
+		set({ isLoading: true });
 		try {
 			const list = get().lists.find(list => list.id === listId);
 			if (!list) throw new Error('List not found');
@@ -326,12 +304,10 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 		} catch (error) {
 			console.error('Failed to fetch cards', error);
 			set({ isLoading: false });
-			return [];
 		}
 	},
 
 	createCard: async (boardId, listId, data) => {
-		// set({ isLoading: true });
 		try {
 			const list = get().lists.find(list => list.id === listId);
 			if (!list) throw new Error('List not found');
@@ -353,13 +329,11 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			set(state => ({
 				cards: [...state.cards, newCard],
-				isLoading: false,
 			}));
 
 			return newCard;
 		} catch (error) {
 			console.error('Something went wrong', error);
-			set({ isLoading: false });
 		}
 	},
 
