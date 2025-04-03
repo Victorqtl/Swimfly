@@ -73,7 +73,7 @@ export default function NavbarClient({ session }: NavbarClientProps) {
 
 			{session?.user ? (
 				<button
-					onClick={() => signOut({ callbackUrl: '/sign-in' })}
+					onClick={() => signOut({ redirectTo: '/sign-in' })}
 					className='px-3 py-1 text-md border rounded-lg cursor-pointer hover:bg-accent'>
 					Sign out
 				</button>
