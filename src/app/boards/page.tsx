@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import BoardsList from '@/components/boards/BoardsList';
 import { useKanbanStore } from '@/store/useKanbanStore';
 
