@@ -48,6 +48,7 @@ type KanbanState = {
 	setCardId: (id: string | null) => void;
 	setOpenBoardModal: (open: boolean) => void;
 	setOpenCardModal: (open: boolean) => void;
+	setLists: (lists: List[]) => void;
 
 	fetchBoards: () => Promise<Board[]>;
 	createBoard: (data: { title: string; color?: string }) => Promise<Board>;
@@ -58,6 +59,7 @@ type KanbanState = {
 	fetchLists: (boardId: string) => Promise<List[]>;
 	createList: (boardId: string, data: { title: string }) => Promise<List>;
 	updateList: (boardId: string, listId: string, data: { title: string; order?: number }) => Promise<void>;
+	updateListsOrder: (boardId: string, listsWithNewOrder: { id: string; order: number }[]) => Promise<void>;
 	deleteList: (listId: string, boardId: string) => Promise<void>;
 
 	fetchCards: (boardId: string, listId: string) => Promise<Card[]>;
@@ -89,6 +91,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	setBoardId: id => set({ boardId: id }),
 	setListId: id => set({ listId: id }),
 	setCardId: id => set({ cardId: id }),
+	setLists: lists => set({ lists }),
 
 	fetchBoards: async () => {
 		set({ isLoading: true });
@@ -189,7 +192,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	fetchLists: async (boardId: string) => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}/lists`);
 			if (!response.ok) {
@@ -250,6 +253,9 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			});
 
 			if (!response.ok) {
+				set(state => ({
+					lists: state.lists.map(l => (l.id === listId ? list : l)),
+				}));
 				throw new Error('Error during list update');
 			}
 
@@ -258,8 +264,29 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			set(state => ({
 				lists: state.lists.map(l => (l.id === listId ? updatedList : l)),
 			}));
+
+			get().fetchLists(boardId);
+
+			return updatedList;
 		} catch (error) {
 			console.error('Something went wrong', error);
+		}
+	},
+
+	updateListsOrder: async (boardId, listsWithNewOrder) => {
+		try {
+			const response = await fetch(`/api/boards/${boardId}/lists/reorder`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ lists: listsWithNewOrder }),
+			});
+
+			if (!response.ok) {
+				throw new Error('Error during lists reordering');
+			}
+		} catch (error) {
+			console.error('Something went wrong', error);
+			get().fetchLists(boardId);
 		}
 	},
 
@@ -276,13 +303,14 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			set(state => ({
 				lists: state.lists.filter(list => list.id !== listId),
 			}));
+			get().fetchLists(boardId);
 		} catch (error) {
 			console.error('Something went wrong', error);
 		}
 	},
 
 	fetchCards: async (boardId, listId) => {
-		set({ isLoading: true });
+		// set({ isLoading: true });
 		try {
 			const list = get().lists.find(list => list.id === listId);
 			if (!list) throw new Error('List not found');

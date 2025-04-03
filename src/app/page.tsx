@@ -12,13 +12,13 @@ export default function page() {
 				className='absolute top-0 w-full h-screen'
 			/>
 			<div className='absolute top-[20%] left-[50%] -translate-x-[50%] flex flex-col gap-10'>
-				<h1 className='text-8xl text-center'>
+				<h1 className='text-6xl md:text-8xl text-center'>
 					Managing your <span className='text-blue-400 font-bold'>life</span> has never been{' '}
 					<span className='text-blue-400 font-bold'>easier</span>
 				</h1>
 				<Link
 					href='/sign-up'
-					className='py-6 px-12 text-xl rounded-full bg-blue-400 text-white self-center cursor-pointer hover:bg-blue-500 transition-colors ease-in-out'>
+					className='py-6 px-12 text-md md:text-xl rounded-full bg-blue-400 text-white self-center cursor-pointer hover:bg-blue-500 transition-colors ease-in-out'>
 					Boost your productivity
 				</Link>
 			</div>
