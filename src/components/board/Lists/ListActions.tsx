@@ -28,18 +28,6 @@ export default function ListActions({
 						Add a card
 					</button>
 				</li>
-				<li className='hover:bg-gray-100 hover:-mx-4 hover:px-4'>
-					<button
-						onClick={() => {
-							setListId(listId);
-							const sortedCards = [...cards].sort((a, b) => a.title.localeCompare(b.title));
-							useKanbanStore.setState({ cards: sortedCards });
-							setToggleActionsList(false);
-						}}
-						className='w-full py-2 text-left cursor-pointer'>
-						Sort by name
-					</button>
-				</li>
 				<li
 					onClick={() => deleteList(boardId!, listId)}
 					className='hover:-mx-4'>

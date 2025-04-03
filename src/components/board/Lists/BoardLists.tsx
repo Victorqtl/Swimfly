@@ -49,7 +49,7 @@ export default function BoardList() {
 
 	return (
 		<ul className='flex gap-4 p-4'>
-			{loadingState.lists ? (
+			{loadingState.cards ? (
 				Array.from({ length: 2 }).map((_, index) => (
 					<li
 						key={`skeleton-${index}`}
