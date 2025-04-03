@@ -1,18 +1,8 @@
 import { useKanbanStore } from '@/store/useKanbanStore';
 import AddList from './AddList';
-import {
-	DndContext,
-	DragEndEvent,
-	DragOverEvent,
-	closestCenter,
-	PointerSensor,
-	useSensor,
-	useSensors,
-} from '@dnd-kit/core';
+import { DndContext, DragEndEvent, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import ListItem from './ListItem';
-import { useState, useEffect } from 'react';
-import { List } from '@/store/useKanbanStore';
 
 export default function BoardList() {
 	const { lists, boardId, setLists, updateListsOrder } = useKanbanStore();

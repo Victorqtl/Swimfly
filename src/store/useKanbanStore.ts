@@ -192,21 +192,19 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	fetchLists: async (boardId: string) => {
-		// set({ isLoading: true });
 		try {
 			const response = await fetch(`/api/boards/${boardId}/lists`);
 			if (!response.ok) {
 				throw new Error('Error during lists fetching');
 			}
 			const lists = await response.json();
-			set({ lists: lists, isLoading: false });
+			set({ lists: lists });
 			for (const list of lists) {
 				get().fetchCards(boardId, list.id);
 			}
 			return lists;
 		} catch (error) {
 			console.error('Failed to fetch lists', error);
-			set({ isLoading: false });
 		}
 	},
 
@@ -310,7 +308,6 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	fetchCards: async (boardId, listId) => {
-		// set({ isLoading: true });
 		try {
 			const list = get().lists.find(list => list.id === listId);
 			if (!list) throw new Error('List not found');
@@ -325,13 +322,11 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			set(state => ({
 				cards: [...state.cards.filter(card => card.listId !== listId), ...cards],
-				isLoading: false,
 			}));
 
 			return cards;
 		} catch (error) {
 			console.error('Failed to fetch cards', error);
-			set({ isLoading: false });
 		}
 	},
 

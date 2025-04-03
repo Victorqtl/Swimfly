@@ -15,8 +15,9 @@ type ListItemProps = {
 
 export default function ListItem(props: ListItemProps) {
 	const { list } = props;
-	const { id, title, order } = list;
+	const { id, title } = list;
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: id });
+
 	const { boardId, updateList, setListId, listId } = useKanbanStore();
 	const [localListTitle, setLocalListTitle] = useState<string>('');
 	const [toggleActionsList, setToggleActionsList] = useState(false);

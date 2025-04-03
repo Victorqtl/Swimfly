@@ -1,6 +1,6 @@
-import { Search, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import Link from 'next/link';
 
 interface NotFoundProps {
 	title?: string;
@@ -37,7 +37,7 @@ export default function NotFound({
 					variant='secondary'
 					asChild
 					className='group'>
-					<a href='/'>
+					<Link href='/'>
 						<ArrowLeft
 							className='me-2 ms-0 opacity-60 transition-transform group-hover:-translate-x-0.5'
 							size={16}
@@ -45,13 +45,13 @@ export default function NotFound({
 							aria-hidden='true'
 						/>
 						Go back
-					</a>
+					</Link>
 				</Button>
 				<Button
 					variant='blue'
 					className='-order-1 sm:order-none'
 					asChild>
-					<a href='/'>Take me home</a>
+					<Link href='/'>Take me home</Link>
 				</Button>
 			</div>
 		</div>
