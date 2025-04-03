@@ -31,6 +31,15 @@ export type Board = {
 	updatedAt: Date;
 };
 
+type LoadingState = {
+	boards: boolean;
+	lists: boolean;
+	cards: boolean;
+	board: boolean;
+	createBoard: boolean;
+	updateCard: boolean;
+};
+
 type KanbanState = {
 	boards: Board[];
 	lists: List[];
@@ -38,6 +47,7 @@ type KanbanState = {
 	openBoardModal: boolean;
 	openCardModal: boolean;
 	isLoading: boolean;
+	loadingState: LoadingState;
 	currentBoard: Board | null;
 	boardId: string | null;
 	listId: string | null;
@@ -81,6 +91,14 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	openBoardModal: false,
 	openCardModal: false,
 	isLoading: false,
+	loadingState: {
+		boards: false,
+		lists: false,
+		cards: false,
+		board: false,
+		createBoard: false,
+		updateCard: false,
+	},
 	boardId: null,
 	listId: null,
 	cardId: null,
@@ -94,38 +112,45 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	setLists: lists => set({ lists }),
 
 	fetchBoards: async () => {
-		set({ isLoading: true });
+		set(state => ({ loadingState: { ...state.loadingState, boards: true } }));
 		try {
 			const response = await fetch('/api/boards');
 			if (!response.ok) {
 				throw new Error('Error during boards fetching');
 			}
 			const boards = await response.json();
-			set({ boards: boards, isLoading: false });
+			set(state => ({
+				boards: boards,
+				loadingState: { ...state.loadingState, boards: false },
+			}));
 			return boards;
 		} catch (error) {
 			console.error('Something went wrong', error);
-			set({ isLoading: false });
+			set(state => ({ loadingState: { ...state.loadingState, boards: false } }));
 		}
 	},
 
 	getBoard: async boardId => {
-		set({ isLoading: true });
+		set(state => ({ loadingState: { ...state.loadingState, board: true } }));
 		try {
 			const response = await fetch(`/api/boards/${boardId}`);
 			if (!response.ok) {
 				throw new Error('Error when fetching board');
 			}
 			const board = await response.json();
-			set({ currentBoard: board, isLoading: false });
+			set(state => ({
+				currentBoard: board,
+				loadingState: { ...state.loadingState, board: false },
+			}));
 			get().fetchLists(boardId);
 		} catch (error) {
 			console.error('Something went wrong', error);
-			set({ isLoading: false });
+			set(state => ({ loadingState: { ...state.loadingState, board: false } }));
 		}
 	},
 
 	createBoard: async data => {
+		set(state => ({ loadingState: { ...state.loadingState, createBoard: true } }));
 		try {
 			const response = await fetch('/api/boards', {
 				method: 'POST',
@@ -141,10 +166,12 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			set(state => ({
 				boards: [...state.boards, board],
 				openBoardModal: false,
+				loadingState: { ...state.loadingState, createBoard: false },
 			}));
 			return board;
 		} catch (error) {
 			console.error('Something went wrong:', error);
+			set(state => ({ loadingState: { ...state.loadingState, createBoard: false } }));
 		}
 	},
 
@@ -192,19 +219,24 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	fetchLists: async (boardId: string) => {
+		set(state => ({ loadingState: { ...state.loadingState, lists: true } }));
 		try {
 			const response = await fetch(`/api/boards/${boardId}/lists`);
 			if (!response.ok) {
 				throw new Error('Error during lists fetching');
 			}
 			const lists = await response.json();
-			set({ lists: lists });
+			set(state => ({
+				lists: lists,
+				loadingState: { ...state.loadingState, lists: false },
+			}));
 			for (const list of lists) {
 				get().fetchCards(boardId, list.id);
 			}
 			return lists;
 		} catch (error) {
 			console.error('Failed to fetch lists', error);
+			set(state => ({ loadingState: { ...state.loadingState, lists: false } }));
 		}
 	},
 
@@ -253,6 +285,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			if (!response.ok) {
 				set(state => ({
 					lists: state.lists.map(l => (l.id === listId ? list : l)),
+					loadingState: { ...state.loadingState, updateList: false },
 				}));
 				throw new Error('Error during list update');
 			}
@@ -262,8 +295,6 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			set(state => ({
 				lists: state.lists.map(l => (l.id === listId ? updatedList : l)),
 			}));
-
-			get().fetchLists(boardId);
 
 			return updatedList;
 		} catch (error) {
@@ -290,6 +321,10 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 	deleteList: async (boardId, listId) => {
 		try {
+			const list = get().lists.find(list => list.id === listId);
+			if (!list) {
+				throw new Error('List not found');
+			}
 			const response = await fetch(`/api/boards/${boardId}/lists/${listId}`, {
 				method: 'DELETE',
 			});
@@ -301,13 +336,13 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			set(state => ({
 				lists: state.lists.filter(list => list.id !== listId),
 			}));
-			get().fetchLists(boardId);
 		} catch (error) {
 			console.error('Something went wrong', error);
 		}
 	},
 
 	fetchCards: async (boardId, listId) => {
+		set(state => ({ loadingState: { ...state.loadingState, cards: true } }));
 		try {
 			const list = get().lists.find(list => list.id === listId);
 			if (!list) throw new Error('List not found');
@@ -322,11 +357,13 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			set(state => ({
 				cards: [...state.cards.filter(card => card.listId !== listId), ...cards],
+				loadingState: { ...state.loadingState, cards: false },
 			}));
 
 			return cards;
 		} catch (error) {
 			console.error('Failed to fetch cards', error);
+			set(state => ({ loadingState: { ...state.loadingState, cards: false } }));
 		}
 	},
 
@@ -361,6 +398,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	},
 
 	updateCard: async (boardId, listId, cardId, data) => {
+		set(state => ({ loadingState: { ...state.loadingState, updateCard: true } }));
 		try {
 			const card = get().cards.find(card => card.id === cardId);
 			if (!card) {
@@ -384,9 +422,11 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			set(state => ({
 				cards: state.cards.map(c => (c.id === cardId ? updatedCard : c)),
+				loadingState: { ...state.loadingState, updateCard: false },
 			}));
 		} catch (error) {
 			console.log('Something went wrong', error);
+			set(state => ({ loadingState: { ...state.loadingState, updateCard: false } }));
 		}
 	},
 
@@ -405,12 +445,9 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 				throw new Error('Error during card deletion');
 			}
 
-			const deletedCard = get().cards.find(c => c.id === cardId);
-			if (deletedCard) {
-				set(state => ({
-					cards: state.cards.filter(c => c.id !== cardId),
-				}));
-			}
+			set(state => ({
+				cards: state.cards.filter(c => c.id !== cardId),
+			}));
 		} catch (error) {
 			console.error('Something went wrong', error);
 		}

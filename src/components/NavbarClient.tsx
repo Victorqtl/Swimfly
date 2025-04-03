@@ -12,7 +12,6 @@ type NavbarClientProps = {
 
 export default function NavbarClient({ session }: NavbarClientProps) {
 	const [openMenu, setOpenMenu] = useState(false);
-	console.log(openMenu);
 	return (
 		<div className='relative flex justify-between items-center p-4'>
 			<Link
@@ -33,7 +32,6 @@ export default function NavbarClient({ session }: NavbarClientProps) {
 				<Link href='/help'>Help</Link>
 			</div>
 
-			{/* Menu mobile */}
 			{openMenu && (
 				<div className='absolute right-10 top-10 bg-white z-50 p-4 flex flex-col border-1 shadow-sm rounded-lg md:hidden'>
 					<div className='flex flex-col gap-4'>
@@ -61,11 +59,15 @@ export default function NavbarClient({ session }: NavbarClientProps) {
 
 			<div className='md:hidden'>
 				{!openMenu ? (
-					<button onClick={() => setOpenMenu(!openMenu)}>
+					<button
+						className='cursor-pointer'
+						onClick={() => setOpenMenu(!openMenu)}>
 						<Menu />
 					</button>
 				) : (
-					<button onClick={() => setOpenMenu(false)}>
+					<button
+						className='cursor-pointer'
+						onClick={() => setOpenMenu(false)}>
 						<X />
 					</button>
 				)}

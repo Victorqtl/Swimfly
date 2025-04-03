@@ -1,18 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
 import { Button } from '../ui/button';
 import { CreateNewBoard } from './CreateNewBoard';
 import { useKanbanStore } from '@/store/useKanbanStore';
 import Link from 'next/link';
 
 export default function BoardsList() {
-	const { boards, fetchBoards, openBoardModal, setOpenBoardModal } = useKanbanStore();
-	console.log('Boards:', boards);
-
-	useEffect(() => {
-		fetchBoards();
-	}, [fetchBoards]);
+	const { boards, openBoardModal, setOpenBoardModal } = useKanbanStore();
 
 	return (
 		<section className='flex-1 p-4'>

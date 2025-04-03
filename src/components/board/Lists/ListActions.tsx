@@ -11,7 +11,7 @@ export default function ListActions({
 	setShowAddCard: Dispatch<SetStateAction<boolean>>;
 	setToggleActionsList: Dispatch<SetStateAction<boolean>>;
 }) {
-	const { deleteList, setListId, boardId } = useKanbanStore();
+	const { deleteList, setListId, boardId, cards } = useKanbanStore();
 
 	return (
 		<>
@@ -28,8 +28,17 @@ export default function ListActions({
 						Add a card
 					</button>
 				</li>
-				<li className='py-2 hover:bg-gray-100 hover:-mx-4 hover:px-4 cursor-pointer'>
-					<p>Sort by...</p>
+				<li className='hover:bg-gray-100 hover:-mx-4 hover:px-4'>
+					<button
+						onClick={() => {
+							setListId(listId);
+							const sortedCards = [...cards].sort((a, b) => a.title.localeCompare(b.title));
+							useKanbanStore.setState({ cards: sortedCards });
+							setToggleActionsList(false);
+						}}
+						className='w-full py-2 text-left cursor-pointer'>
+						Sort by name
+					</button>
 				</li>
 				<li
 					onClick={() => deleteList(boardId!, listId)}
