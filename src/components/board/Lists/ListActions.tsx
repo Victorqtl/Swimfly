@@ -11,7 +11,7 @@ export default function ListActions({
 	setShowAddCard: Dispatch<SetStateAction<boolean>>;
 	setToggleActionsList: Dispatch<SetStateAction<boolean>>;
 }) {
-	const { deleteList, setListId, boardId, cards } = useKanbanStore();
+	const { deleteList, setListId, boardId } = useKanbanStore();
 
 	return (
 		<>
