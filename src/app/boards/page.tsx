@@ -9,7 +9,7 @@ export default function BoardsPage() {
 
 	useEffect(() => {
 		fetchBoards();
-	}, []);
+	}, [fetchBoards]);
 
 	return (
 		<>
