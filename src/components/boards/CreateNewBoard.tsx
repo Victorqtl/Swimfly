@@ -20,7 +20,7 @@ const formSchema = z.object({
 });
 
 export function CreateNewBoard() {
-	const { createBoard, isLoading, setOpenBoardModal } = useKanbanStore();
+	const { createBoard, setOpenBoardModal, loadingState } = useKanbanStore();
 	const router = useRouter();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -29,25 +29,15 @@ export function CreateNewBoard() {
 			color: 'bg-white',
 		},
 	});
-	const [isCreating, setIsCreating] = useState(false);
-
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		setIsCreating(true);
 		try {
 			const newBoard = await createBoard(values);
-
 			if (!newBoard) {
-				setIsCreating(false);
 				return;
 			}
-
 			setOpenBoardModal(false);
-
-			router.push(`/boards/${newBoard.id}`);
-			setIsCreating(false);
 		} catch (error) {
 			console.error('Error creating board:', error);
-			setIsCreating(false);
 		}
 	}
 	return (
@@ -110,8 +100,12 @@ export function CreateNewBoard() {
 				<Button
 					type='submit'
 					variant='blue'
-					disabled={isLoading}>
-					{isCreating ? <span className='loading loading-spinner text-info'></span> : <span>Submit</span>}
+					disabled={loadingState.createBoard}>
+					{loadingState.createBoard ? (
+						<span className='loading loading-spinner text-info'></span>
+					) : (
+						<span>Submit</span>
+					)}
 				</Button>
 				<button
 					type='button'
