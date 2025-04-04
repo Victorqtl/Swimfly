@@ -488,7 +488,6 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 
 			set(state => ({
 				cards: state.cards.map(c => (c.id === cardId ? updatedCard : c)),
-				loadingState: { ...state.loadingState, updateCard: false },
 			}));
 		} catch (error) {
 			console.log('Something went wrong', error);

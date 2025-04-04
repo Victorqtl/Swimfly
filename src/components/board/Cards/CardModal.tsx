@@ -5,7 +5,7 @@ import { AlignJustify, X, Palette, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function CardModal() {
-	const { cards, cardId, setOpenCardModal, updateCard, deleteCard, boardId, listId, loadingState } = useKanbanStore();
+	const { cards, cardId, setOpenCardModal, updateCard, deleteCard, boardId, listId } = useKanbanStore();
 	const [showInputDescription, setShowInputDescription] = useState<boolean>(false);
 	const [showInputTitle, setShowInputTitle] = useState(false);
 	const [localCardTitle, setLocalCardTitle] = useState('');
@@ -103,7 +103,10 @@ export default function CardModal() {
 								</div>
 								{card.description && (
 									<Button
-										onClick={() => setShowInputDescription(true)}
+										onClick={() => {
+											setShowInputDescription(true);
+											setlocalDescription(`${card.description}`);
+										}}
 										className='bg-neutral-500'>
 										Edit
 									</Button>
@@ -112,18 +115,12 @@ export default function CardModal() {
 							<div>
 								{!showInputDescription ? (
 									!card.description ? (
-										loadingState.updateCard ? (
-											<div className='flex justify-center items-center w-full py-4'>
-												<div className='w-8 h-8 border-3 border-t-blue-400 border-b-blue-400 border-l-transparent border-r-transparent rounded-full animate-spin'></div>
-											</div>
-										) : (
-											<button
-												onClick={() => setShowInputDescription(true)}
-												aria-label='Add a description'
-												className='w-full px-2 pt-2 pb-7 text-left bg-neutral-100 cursor-pointer rounded-sm'>
-												Add a description...
-											</button>
-										)
+										<button
+											onClick={() => setShowInputDescription(true)}
+											aria-label='Add a description'
+											className='w-full px-2 pt-2 pb-7 text-left bg-neutral-100 cursor-pointer rounded-sm'>
+											Add a description...
+										</button>
 									) : (
 										<p
 											onClick={() => {
