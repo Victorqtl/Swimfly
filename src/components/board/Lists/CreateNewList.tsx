@@ -16,7 +16,7 @@ const formSchema = z.object({
 });
 
 export function CreateNewList({ setShowAddList }: { setShowAddList: (show: boolean) => void }) {
-	const { createList, isLoading, boardId } = useKanbanStore();
+	const { createList, boardId } = useKanbanStore();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -26,8 +26,8 @@ export function CreateNewList({ setShowAddList }: { setShowAddList: (show: boole
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		if (boardId) {
-			await createList(boardId, values);
 			setShowAddList(false);
+			await createList(boardId, values);
 		}
 	}
 
@@ -60,7 +60,6 @@ export function CreateNewList({ setShowAddList }: { setShowAddList: (show: boole
 					<Button
 						type='submit'
 						variant='blue'
-						disabled={isLoading}
 						aria-label='Create a new list'
 						className='flex-1'>
 						Submit

@@ -46,7 +46,6 @@ type KanbanState = {
 	cards: Card[];
 	openBoardModal: boolean;
 	openCardModal: boolean;
-	isLoading: boolean;
 	loadingState: LoadingState;
 	currentBoard: Board | null;
 	boardId: string | null;
@@ -90,7 +89,6 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	currentBoard: null,
 	openBoardModal: false,
 	openCardModal: false,
-	isLoading: false,
 	loadingState: {
 		boards: false,
 		lists: false,
@@ -263,6 +261,21 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			const lists = get().lists.filter(list => list.boardId === boardId);
 			const order = lists.length > 0 ? Math.max(...lists.map(list => list.order)) + 1 : 1;
 
+			const tempId = `temp-${Date.now()}`;
+			const optimisticList: List = {
+				id: tempId,
+				title: data.title,
+				order,
+				boardId,
+				cards: [],
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			};
+
+			set(state => ({
+				lists: [...state.lists, optimisticList],
+			}));
+
 			const response = await fetch(`/api/boards/${boardId}/lists`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -270,17 +283,19 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			});
 
 			if (!response.ok) {
+				set(state => ({
+					lists: state.lists.filter(l => l.id !== tempId),
+				}));
 				throw new Error('Error during list creation');
 			}
 
-			const list = await response.json();
+			const serverList = await response.json();
 
 			set(state => ({
-				lists: [...state.lists, list],
-				openModal: false,
+				lists: state.lists.map(l => (l.id === tempId ? serverList : l)),
 			}));
 
-			return list;
+			return serverList;
 		} catch (error) {
 			console.error('Something went wrong', error);
 		}
@@ -400,6 +415,21 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			const cards = get().cards.filter(card => card.listId === listId);
 			const order = cards.length > 0 ? Math.max(...cards.map(card => card.order)) + 1 : 1;
 
+			const tempId = `temp-${Date.now()}`;
+			const optimisticCard: Card = {
+				id: tempId,
+				title: data.title,
+				order,
+				listId,
+				archived: false,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			};
+
+			set(state => ({
+				cards: [...state.cards, optimisticCard],
+			}));
+
 			const response = await fetch(`/api/boards/${boardId}/lists/${listId}/cards`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -407,16 +437,19 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			});
 
 			if (!response.ok) {
+				set(state => ({
+					cards: state.cards.filter(c => c.id !== tempId),
+				}));
 				throw new Error('Error during card creation');
 			}
 
-			const newCard = await response.json();
+			const serverCard = await response.json();
 
 			set(state => ({
-				cards: [...state.cards, newCard],
+				cards: state.cards.map(c => (c.id === tempId ? serverCard : c)),
 			}));
 
-			return newCard;
+			return serverCard;
 		} catch (error) {
 			console.error('Something went wrong', error);
 		}

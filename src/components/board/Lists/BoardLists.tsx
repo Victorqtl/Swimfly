@@ -3,17 +3,9 @@ import AddList from './AddList';
 import { DndContext, DragEndEvent, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import ListItem from './ListItem';
-import { Skeleton } from '@/components/ui/skeleton';
 
-const ListSkeleton = () => (
-	<li className='min-w-[272px] bg-neutral-200 rounded-lg p-4 shadow-sm'>
-		<Skeleton className='h-6 w-40 mb-3' />
-		<div className='space-y-2'>
-			<Skeleton className='h-6 w-full rounded-lg' />
-			<Skeleton className='h-6 w-full rounded-lg' />
-			<Skeleton className='h-6 w-full rounded-lg' />
-		</div>
-	</li>
+const ListSkeleton = ({ height }: { height: string }) => (
+	<li className={`min-w-[272px] ${height} bg-neutral-400 rounded-lg p-4 shadow-sm`}></li>
 );
 
 export default function BoardList() {
@@ -64,9 +56,9 @@ export default function BoardList() {
 		<ul className='flex gap-4 p-4'>
 			{isLoading ? (
 				<>
-					<ListSkeleton />
-					<ListSkeleton />
-					<ListSkeleton />
+					<ListSkeleton height='h-[400px]' />
+					<ListSkeleton height='h-[200px]' />
+					<ListSkeleton height='h-[40px]' />
 				</>
 			) : (
 				<>

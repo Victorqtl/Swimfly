@@ -16,7 +16,7 @@ const formSchema = z.object({
 });
 
 export function CreateNewCard({ setShowAddCard }: { setShowAddCard: (show: boolean) => void }) {
-	const { createCard, isLoading, boardId, listId, setListId } = useKanbanStore();
+	const { createCard, boardId, listId, setListId } = useKanbanStore();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -26,8 +26,8 @@ export function CreateNewCard({ setShowAddCard }: { setShowAddCard: (show: boole
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		if (boardId) {
-			await createCard(boardId, listId!, values);
 			setShowAddCard(false);
+			await createCard(boardId, listId!, values);
 		}
 	}
 
@@ -63,7 +63,6 @@ export function CreateNewCard({ setShowAddCard }: { setShowAddCard: (show: boole
 					<Button
 						type='submit'
 						variant='blue'
-						disabled={isLoading}
 						aria-label='Create a new card'
 						className='flex-1'>
 						Submit
