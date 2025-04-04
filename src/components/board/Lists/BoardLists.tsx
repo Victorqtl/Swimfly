@@ -5,6 +5,17 @@ import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-
 import ListItem from './ListItem';
 import { Skeleton } from '@/components/ui/skeleton';
 
+const ListSkeleton = () => (
+	<li className='min-w-[272px] bg-neutral-200 rounded-lg p-4 shadow-sm'>
+		<Skeleton className='h-6 w-40 mb-3' />
+		<div className='space-y-2'>
+			<Skeleton className='h-6 w-full rounded-lg' />
+			<Skeleton className='h-6 w-full rounded-lg' />
+			<Skeleton className='h-6 w-full rounded-lg' />
+		</div>
+	</li>
+);
+
 export default function BoardList() {
 	const { lists, boardId, setLists, updateListsOrder, loadingState } = useKanbanStore();
 
@@ -47,20 +58,16 @@ export default function BoardList() {
 		}
 	};
 
+	const isLoading = loadingState.lists || loadingState.cards;
+
 	return (
 		<ul className='flex gap-4 p-4'>
-			{loadingState.cards ? (
-				Array.from({ length: 2 }).map((_, index) => (
-					<li
-						key={`skeleton-${index}`}
-						className='w-72 shrink-0 rounded-md bg-gray-100 dark:bg-gray-800 p-3'>
-						<Skeleton className='h-6 w-32 mb-4' />
-						<div className='space-y-3'>
-							<Skeleton className='h-20 w-full' />
-							<Skeleton className='h-20 w-full' />
-						</div>
-					</li>
-				))
+			{isLoading ? (
+				<>
+					<ListSkeleton />
+					<ListSkeleton />
+					<ListSkeleton />
+				</>
 			) : (
 				<>
 					<DndContext

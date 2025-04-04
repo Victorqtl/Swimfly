@@ -64,6 +64,7 @@ export function CreateNewCard({ setShowAddCard }: { setShowAddCard: (show: boole
 						type='submit'
 						variant='blue'
 						disabled={isLoading}
+						aria-label='Create a new card'
 						className='flex-1'>
 						Submit
 					</Button>

@@ -36,6 +36,7 @@ export default function NotFound({
 				<Button
 					variant='secondary'
 					asChild
+					aria-label='Go back'
 					className='group'>
 					<Link href='/'>
 						<ArrowLeft
@@ -49,6 +50,7 @@ export default function NotFound({
 				</Button>
 				<Button
 					variant='blue'
+					aria-label='Home page'
 					className='-order-1 sm:order-none'
 					asChild>
 					<Link href='/'>Take me home</Link>

@@ -38,6 +38,7 @@ export default function Sidebar({ session }: { session: Session }) {
 						<h3 className='font-bold'>Your boards</h3>
 						<button
 							onClick={() => setOpenBoardModal(true)}
+							aria-label='Create a new board'
 							className='-mx-2 p-2 text-xl font-bold cursor-pointer rounded-lg hover:bg-neutral-100'>
 							<Plus
 								size={16}

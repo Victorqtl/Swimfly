@@ -61,6 +61,7 @@ export function CreateNewList({ setShowAddList }: { setShowAddList: (show: boole
 						type='submit'
 						variant='blue'
 						disabled={isLoading}
+						aria-label='Create a new list'
 						className='flex-1'>
 						Submit
 					</Button>

@@ -24,14 +24,16 @@ export default function ListActions({
 							setShowAddCard(true);
 							setToggleActionsList(false);
 						}}
+						aria-label='Add a card'
 						className='w-full py-2 cursor-pointer text-left'>
 						Add a card
 					</button>
 				</li>
-				<li
-					onClick={() => deleteList(boardId!, listId)}
-					className='hover:-mx-4'>
-					<button className='w-full flex justify-between items-center py-2 hover:bg-red-200 hover:px-4 cursor-pointer'>
+				<li className='hover:-mx-4'>
+					<button
+						onClick={() => deleteList(boardId!, listId)}
+						aria-label='Delete list'
+						className='w-full flex justify-between items-center py-2 hover:bg-red-200 hover:px-4 cursor-pointer'>
 						<p>Delete list</p>
 						<Trash2 size={16} />
 					</button>

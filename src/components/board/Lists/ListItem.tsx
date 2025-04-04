@@ -119,6 +119,7 @@ export default function ListItem(props: ListItemProps) {
 							setListId(id);
 						}
 					}}
+					aria-label='Open actions list'
 					className='p-1 rounded-lg cursor-pointer hover:bg-gray-100'>
 					<Ellipsis />
 				</button>
@@ -131,6 +132,7 @@ export default function ListItem(props: ListItemProps) {
 							setListId(id);
 							setShowAddCard(true);
 						}}
+						aria-label='Add a card'
 						className='relative flex items-center gap-2 w-full p-2 rounded-lg cursor-pointer hover:bg-neutral-100'>
 						<Plus size={16} />
 						Add a card

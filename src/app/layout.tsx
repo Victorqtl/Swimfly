@@ -22,7 +22,7 @@ export default function RootLayout({
 				<header className='z-50'>
 					<Navbar />
 				</header>
-				<main className='flex flex-col h-[calc(100vh-86px)]'>{children}</main>
+				<main className='flex flex-col min-h-[calc(100vh-88px)]'>{children}</main>
 				<Toaster />
 			</body>
 		</html>

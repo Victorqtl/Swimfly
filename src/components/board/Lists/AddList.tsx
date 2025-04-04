@@ -12,6 +12,7 @@ export default function AddList() {
 				<Button
 					onClick={() => setShowAddList(true)}
 					variant='blue'
+					aria-label='Add a list'
 					className='h-10 min-w-[272px] flex items-center justify-center gap-2'>
 					<span className='text-xl'>
 						<Plus strokeWidth={3} />

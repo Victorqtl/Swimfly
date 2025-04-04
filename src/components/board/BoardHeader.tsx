@@ -70,6 +70,7 @@ export default function BoardHeader() {
 				<button
 					ref={ellipsisButtonRef}
 					onClick={() => setToggleActionsList(!toggleActionsList)}
+					aria-label='Open actions list'
 					className='p-2 hover:bg-neutral-700/15 cursor-pointer rounded-lg'>
 					<Ellipsis />
 				</button>
@@ -96,6 +97,7 @@ export default function BoardHeader() {
 										key={color}
 										type='button'
 										onClick={() => updateBoard(boardId!, { title: localTitle, color: color })}
+										aria-label='Change wallpaper color'
 										className={`w-[40px] h-[25px] ${color} rounded-sm cursor-pointer border border-neutral-300 ${
 											currentBoard!.color === color ? 'border-0 ring-2 ring-neutral-300' : ''
 										}`}
@@ -108,6 +110,7 @@ export default function BoardHeader() {
 										deleteBoard(boardId!);
 										redirect('/boards');
 									}}
+									aria-label='Delete board'
 									className='w-full py-2 flex justify-between items-center cursor-pointer hover:bg-red-200 hover:px-4'>
 									<span>Delete board</span> <Trash size={16} />
 								</button>

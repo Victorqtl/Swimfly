@@ -145,7 +145,8 @@ export function SignUpForm() {
 				/>
 				<Button
 					type='submit'
-					variant='blue'>
+					variant='blue'
+					aria-label='Sign up'>
 					Sign up
 				</Button>
 			</form>

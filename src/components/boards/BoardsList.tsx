@@ -14,6 +14,7 @@ export default function BoardsList() {
 				<Button
 					onClick={() => setOpenBoardModal(true)}
 					size='xl'
+					aria-label='Create a new board'
 					className='text-base bg-zinc-500 hover:bg-zinc-600'>
 					Create a new board
 				</Button>

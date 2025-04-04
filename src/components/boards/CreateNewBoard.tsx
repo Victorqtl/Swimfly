@@ -64,7 +64,7 @@ export function CreateNewBoard() {
 					name='color'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Board Wallpaper</FormLabel>
+							<FormLabel>Board wallpaper</FormLabel>
 							<FormControl>
 								<div className='flex flex-wrap gap-3 items-center justify-center'>
 									{[
@@ -83,6 +83,7 @@ export function CreateNewBoard() {
 											key={color}
 											type='button'
 											onClick={() => field.onChange(color)}
+											aria-label='Change color'
 											className={`w-[40px] h-[25px] ${color} rounded-sm cursor-pointer border border-neutral-300 ${
 												field.value === color ? 'border-0 ring-2 ring-neutral-300' : ''
 											}`}
@@ -97,7 +98,8 @@ export function CreateNewBoard() {
 				<Button
 					type='submit'
 					variant='blue'
-					disabled={loadingState.createBoard}>
+					disabled={loadingState.createBoard}
+					aria-label='Create board'>
 					{loadingState.createBoard ? (
 						<span className='loading loading-spinner text-info'></span>
 					) : (
@@ -107,6 +109,7 @@ export function CreateNewBoard() {
 				<button
 					type='button'
 					onClick={() => setOpenBoardModal(false)}
+					aria-label='Close form'
 					className='absolute top-2 right-2 cursor-pointer text-xl'>
 					<X
 						size={20}

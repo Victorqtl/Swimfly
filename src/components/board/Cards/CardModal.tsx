@@ -80,6 +80,7 @@ export default function CardModal() {
 											deleteCard(boardId!, listId!, cardId!);
 											setOpenCardModal(false);
 										}}
+										aria-label='Delete card'
 										className='cursor-pointer'>
 										<Trash size={20} />
 									</button>
@@ -89,6 +90,7 @@ export default function CardModal() {
 								onClick={() => {
 									setOpenCardModal(false);
 								}}
+								aria-label='Close form'
 								className='cursor-pointer'>
 								<X size={22} />
 							</button>
@@ -117,6 +119,7 @@ export default function CardModal() {
 										) : (
 											<button
 												onClick={() => setShowInputDescription(true)}
+												aria-label='Add a description'
 												className='w-full px-2 pt-2 pb-7 text-left bg-neutral-100 cursor-pointer rounded-sm'>
 												Add a description...
 											</button>
@@ -191,6 +194,7 @@ export default function CardModal() {
 												color: color,
 											})
 										}
+										aria-label='Add card color'
 										className={`w-[50px] h-[32px] ${color} rounded-sm cursor-pointer hover:brightness-90 ${
 											card.color === color ? 'ring-2 ring-offset-2 ring-blue-400' : ''
 										}`}
@@ -204,6 +208,7 @@ export default function CardModal() {
 												color: '',
 											})
 										}
+										aria-label='Delete color'
 										className='w-[50px] h-[32px] bg-white border border-gray-300 rounded-sm cursor-pointer flex items-center justify-center'>
 										<X size={18} />
 									</button>

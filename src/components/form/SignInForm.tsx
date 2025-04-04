@@ -94,7 +94,8 @@ export function SignInForm() {
 
 				<Button
 					type='submit'
-					variant={'blue'}>
+					variant={'blue'}
+					aria-label='Sign in'>
 					Sign in
 				</Button>
 			</form>
