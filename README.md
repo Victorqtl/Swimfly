@@ -28,6 +28,7 @@ SwimFly is a modern task management application built with Next.js, helping you 
 -   **State Management**: Zustand
 -   **UI Components**: Shadcn UI, DaisyUI
 -   **Form Handling**: React Hook Form with Zod validation
+-   **Drag and Drop**: Dnd kit
 
 ## 📋 Prerequisites
 
