@@ -15,14 +15,14 @@ export default function BoardsList() {
 					onClick={() => setOpenBoardModal(true)}
 					size='xl'
 					aria-label='Create a new board'
-					className='text-base bg-zinc-500 hover:bg-zinc-600'>
+					className='text-base shadow-md bg-zinc-500 hover:bg-zinc-600'>
 					Create a new board
 				</Button>
 				{boards && boards.length > 0
 					? boards.map(board => (
 							<li
 								key={board.id}
-								className={`h-24 rounded-lg hover:brightness-90 ${board.color} ${
+								className={`h-24 rounded-lg shadow-md hover:brightness-90 ${board.color} ${
 									board.color === 'bg-white' ? 'border-2' : 'border-0'
 								}`}>
 								<Link href={`/boards/${board.id}`}>

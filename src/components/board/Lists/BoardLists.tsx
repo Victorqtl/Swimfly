@@ -37,15 +37,10 @@ export default function BoardList() {
 				order: index + 1,
 			}));
 
-			const listsOrderUpdate = updatedLists.map(list => ({
-				id: list.id,
-				order: list.order,
-			}));
-
 			setLists(updatedLists);
 
 			if (boardId) {
-				updateListsOrder(boardId, listsOrderUpdate);
+				updateListsOrder(boardId, updatedLists);
 			}
 		}
 	};

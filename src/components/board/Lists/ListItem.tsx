@@ -16,7 +16,9 @@ type ListItemProps = {
 export default function ListItem(props: ListItemProps) {
 	const { list } = props;
 	const { id, title } = list;
-	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: id });
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+		id: id,
+	});
 
 	const { boardId, updateList, setListId, listId } = useKanbanStore();
 	const [localListTitle, setLocalListTitle] = useState<string>('');
@@ -30,6 +32,7 @@ export default function ListItem(props: ListItemProps) {
 		transform: CSS.Transform.toString(transform),
 		transition,
 		opacity: isDragging ? 0.7 : 1,
+		boxShadow: isDragging ? '0 5px 15px rgba(0,0,0,0.2)' : undefined,
 	};
 
 	useEffect(() => {
@@ -89,7 +92,7 @@ export default function ListItem(props: ListItemProps) {
 					setListId(null);
 				}
 			}}
-			className='flex flex-col gap-2 relative w-[272px] h-fit p-4 bg-neutral-200 rounded-lg shadow-sm shrink-0'>
+			className='flex flex-col gap-2 relative w-[272px] h-fit p-4 bg-neutral-200 rounded-lg shadow-sm shrink-0 cursor-pointer'>
 			<div className='flex justify-between items-center relative'>
 				{showInputTitle && listId === id ? (
 					<input
@@ -124,7 +127,9 @@ export default function ListItem(props: ListItemProps) {
 					<Ellipsis />
 				</button>
 			</div>
-			<BoardCards listId={id} />
+			<div onPointerDown={e => e.stopPropagation()}>
+				<BoardCards listId={id} />
+			</div>
 			<div>
 				{listId !== id || !showAddCard ? (
 					<button

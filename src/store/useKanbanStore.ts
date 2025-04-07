@@ -58,6 +58,7 @@ type KanbanState = {
 	setOpenBoardModal: (open: boolean) => void;
 	setOpenCardModal: (open: boolean) => void;
 	setLists: (lists: List[]) => void;
+	setCards: (cards: Card[]) => void;
 
 	fetchBoards: () => Promise<Board[]>;
 	createBoard: (data: { title: string; color?: string }) => Promise<Board>;
@@ -78,6 +79,11 @@ type KanbanState = {
 		listId: string,
 		cardId: string,
 		data: { title: string; description?: string; color?: string; archived?: boolean; order?: number }
+	) => Promise<void>;
+	updateCardsOrder: (
+		boardId: string,
+		listId: string,
+		cardsWithNewOrder: { id: string; order: number }[]
 	) => Promise<void>;
 	deleteCard: (boardId: string, listId: string, cardId: string) => Promise<void>;
 };
@@ -108,6 +114,7 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 	setListId: id => set({ listId: id }),
 	setCardId: id => set({ cardId: id }),
 	setLists: lists => set({ lists }),
+	setCards: cards => set({ cards }),
 
 	fetchBoards: async () => {
 		set(state => ({ loadingState: { ...state.loadingState, boards: true } }));
@@ -491,6 +498,23 @@ export const useKanbanStore = create<KanbanState>((set, get) => ({
 			}));
 		} catch (error) {
 			console.log('Something went wrong', error);
+		}
+	},
+
+	updateCardsOrder: async (boardId, listId, cardsWithNewOrder) => {
+		try {
+			const response = await fetch(`/api/boards/${boardId}/lists/${listId}/cards/reorder`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ cards: cardsWithNewOrder }),
+			});
+
+			if (!response.ok) {
+				throw new Error('Error during cards reordering');
+			}
+		} catch (error) {
+			console.error('Something went wrong', error);
+			get().fetchCards(boardId, listId);
 		}
 	},
 

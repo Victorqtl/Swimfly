@@ -12,7 +12,7 @@ export default function page() {
 				className='absolute top-0 w-full h-screen'
 			/>
 			<div className='absolute top-[20%] left-[50%] -translate-x-[50%] flex flex-col gap-10'>
-				<h1 className='text-6xl md:text-8xl text-center'>
+				<h1 className='text-6xl md:text-9xl text-center'>
 					Managing your <span className='text-blue-400 font-bold'>life</span> has never been{' '}
 					<span className='text-blue-400 font-bold'>easier</span>
 				</h1>
