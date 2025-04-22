@@ -15,7 +15,6 @@ SwimFly is a modern task management application built with Next.js, helping you 
 -   **User Authentication**: Secure account creation and login using NextAuth
 -   **Kanban Boards**: Create and manage multiple boards for different projects
 -   **Drag and Drop**: Intuitive drag-and-drop interface for cards and lists using dnd-kit
--   **Responsive Design**: Works seamlessly across desktop and mobile devices
 -   **Real-time Updates**: Changes reflect instantly across the application
 -   **Customization**: Personalize your boards with different colors and labels
 
